@@ -1,3 +1,4 @@
+```javascript
 /* SINGLE RESOURCE REGISTRY
    Resources are organized by folders and files shown in the project.
    Paths are relative to the site folder (study-guide).
@@ -6,17 +7,18 @@
 window.REGISTRY = {
   title: "OAVS TGT Computer Study Guide",
 
-  root: "../",
+  // Resources are served from the study-guide directory.
+  root: "./",
 
   documents: [
-  {
-    name: "OAVS TGT Syllabus (Parts 1, 2 and 3)",
-    file: "syllabus for part 1,2 and 3.pdf",
-    note: "Syllabus for OAVS TGT examination — Parts 1, 2 and 3",
-    action: "View syllabus",
-    color: "#facc15"
-  }
-],
+    {
+      name: "OAVS TGT Syllabus (Parts 1, 2 and 3)",
+      file: "syllabus for part 1,2 and 3.pdf",
+      note: "Syllabus for OAVS TGT examination — Parts 1, 2 and 3",
+      action: "View syllabus",
+      color: "#facc15"
+    }
+  ],
 
   subjects: [
     {
@@ -31,9 +33,9 @@ window.REGISTRY = {
           folder: "Awards",
 
           files: [
-            ["OAVS_Awards_MCQ.html", "quiz"],
-            ["OAVS_Sports_Awards_MCQ.html", "quiz"],
-            ["OAVS_TGT_Current_Affairs_Awards.pdf", "notes"]
+            ["OAVS_Awards_quiz.html", "quiz"],
+            ["OAVS_TGT_Current_Affairs_Awards.pdf", "notes"],
+            ["OAVS_TGT_Current_Affairs_Part2_Awards mcq.pdf", "notes"]
           ]
         },
 
@@ -86,7 +88,7 @@ window.REGISTRY = {
           folder: "Sports",
 
           files: [
-            ["OAVS_Sports_MCQ.pdf", "bank"],
+            ["OAVS_Sports MCQ.pdf", "bank"],
             ["OAVS_Sports_Quiz.html", "quiz"],
             ["OAVS_TGT_Current_Affairs_Part1_Sports.pdf", "notes"]
           ]
@@ -95,3 +97,4 @@ window.REGISTRY = {
     }
   ]
 };
+```
