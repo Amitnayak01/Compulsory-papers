@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>MCQ Exam Prep — Template</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+
+  /* Refresh-prevention banner */
+#refresh-warn{
+  position:fixed;top:70px;left:50%;
+  transform:translateX(-50%) translateY(-80px);
+  background:var(--card);border:1.5px solid var(--amber);
+  border-radius:var(--rs);padding:10px 20px;font-size:13px;
+  font-weight:600;color:var(--amber);box-shadow:var(--shl);
+  z-index:9999;transition:transform .3s cubic-bezier(.34,1.56,.64,1);
+  white-space:nowrap;pointer-events:none
+}
+#refresh-warn.show{transform:translateX(-50%) translateY(0)}
+
+:root{--bg:#F5F3EE;--bg2:#EDEAE2;--card:#FFF;--border:#D8D4C8;--text:#1C1B18;--text2:#6B6860;--text3:#9B998F;--ac:#1B6F52;--ac2:#14543E;--acl:#E3F2EC;--amber:#C47F17;--ambl:#FDF3DC;--red:#C0392B;--redl:#FDECEA;--green:#1B8A52;--greenl:#E3F5EC;--purple:#6B4EAA;--purpl:#F0EBFC;--sh:0 2px 12px rgba(0,0,0,.07);--shl:0 8px 32px rgba(0,0,0,.12);--r:14px;--rs:8px;--fd:'DM Serif Display',Georgia,serif;--fb:'DM Sans',system-ui,sans-serif;--tr:.18s cubic-bezier(.4,0,.2,1)}
+[data-dark]{--bg:#0E0E0C;--bg2:#161613;--card:#1C1C19;--border:#2E2D27;--text:#F0EDE4;--text2:#908E84;--text3:#5A5850;--ac:#2EAD7A;--ac2:#25946A;--acl:#0A2318;--amber:#E0A030;--ambl:#221800;--red:#E05548;--redl:#260E0A;--green:#2EBD6A;--greenl:#082214;--purple:#9B80E0;--purpl:#160F2A;--sh:0 2px 12px rgba(0,0,0,.4);--shl:0 8px 40px rgba(0,0,0,.65)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--fb);background:var(--bg);color:var(--text);min-height:100vh;font-size:15px;line-height:1.6;transition:background var(--tr),color var(--tr)}
+button{cursor:pointer;border:none;background:none;font-family:var(--fb)}
+input,select{font-family:var(--fb)}
+
+/* TOP BAR */
+#top-bar{position:sticky;top:0;z-index:100;background:var(--card);border-bottom:1px solid var(--border);box-shadow:var(--sh)}
+.navbar{max-width:960px;margin:0 auto;padding:0 16px;display:flex;flex-direction:column}
+.nav-row1{display:flex;align-items:center;gap:10px;height:52px;border-bottom:1px solid var(--border)}
+.logo{font-family:var(--fd);font-size:16px;color:var(--ac);white-space:nowrap;flex-shrink:0}
+#progress-wrap{flex:1;min-width:0}
+.progress-label{font-size:10px;color:var(--text3);margin-bottom:3px;display:flex;justify-content:space-between}
+.progress-track{height:4px;background:var(--bg2);border-radius:99px;overflow:hidden}
+.progress-fill{height:100%;background:var(--ac);border-radius:99px;transition:width .4s cubic-bezier(.4,0,.2,1)}
+.nav-icon-group{display:flex;align-items:center;gap:2px;flex-shrink:0}
+.icon-btn{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--text2);transition:background var(--tr),color var(--tr)}
+.icon-btn:hover{background:var(--bg2);color:var(--text)}
+.icon-btn svg{width:17px;height:17px}
+#timer-display{font-size:11px;font-weight:700;color:var(--text2);background:var(--bg2);border:1px solid var(--border);border-radius:99px;padding:3px 9px;font-variant-numeric:tabular-nums;flex-shrink:0}
+#timer-display.warn{color:var(--red);border-color:var(--red);background:var(--redl)}
+.nav-row2{display:flex;align-items:center;gap:5px;padding:6px 0;overflow-x:auto;scrollbar-width:none;border-bottom:1px solid var(--border)}
+.nav-row2::-webkit-scrollbar{display:none}
+.stat-pill{display:flex;align-items:center;gap:4px;background:var(--bg2);border:1px solid var(--border);border-radius:99px;padding:3px 10px;font-size:11px;font-weight:500;color:var(--text2);white-space:nowrap;flex-shrink:0}
+.stat-pill span{font-weight:700}
+.stat-pill.correct{border-color:var(--green);color:var(--green);background:var(--greenl)}
+.stat-pill.wrong{border-color:var(--red);color:var(--red);background:var(--redl)}
+.stat-pill.acc{border-color:var(--amber);color:var(--amber);background:var(--ambl)}
+.nav-row3{display:flex;align-items:center;gap:6px;padding:8px 0;flex-wrap:wrap}
+.filter-select{flex:1;min-width:100px;padding:7px 28px 7px 10px;border-radius:var(--rs);border:1.5px solid var(--border);background:var(--bg2);color:var(--text);font-size:13px;outline:none;cursor:pointer;-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;transition:border-color var(--tr),background var(--tr)}
+.filter-select:focus{border-color:var(--ac);background-color:var(--card)}
+.nav-filter-btns{display:flex;gap:6px;flex-shrink:0}
+
+/* LAYOUT */
+#app{max-width:960px;margin:0 auto;padding:18px 16px 60px}
+.screen{display:none}
+.screen.active{display:block}
+
+/* QUESTION CARD */
+#question-card{background:var(--card);border:1.5px solid var(--border);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;animation:slideIn .25s cubic-bezier(.4,0,.2,1)}
+#question-card.basic-card{border-top:3px solid var(--green)}
+#question-card.inter-card{border-top:3px solid var(--amber)}
+#question-card.advanced-card{border-top:3px solid var(--red)}
+@keyframes slideIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.card-header{display:flex;align-items:center;gap:8px;padding:12px 18px;background:var(--bg2);border-bottom:1px solid var(--border);flex-wrap:wrap}
+.q-number{font-size:12px;font-weight:700;color:var(--ac);background:var(--acl);padding:3px 10px;border-radius:99px}
+.badge{font-size:11px;font-weight:600;padding:3px 9px;border-radius:99px}
+.badge-basic{background:var(--greenl);color:var(--green)}
+.badge-intermediate{background:var(--ambl);color:var(--amber)}
+.badge-advanced{background:var(--redl);color:var(--red)}
+.badge-type{background:var(--purpl);color:var(--purple)}
+.badge-topic{background:var(--bg2);color:var(--text2);border:1px solid var(--border)}
+.bookmark-btn{margin-left:auto;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--text3);transition:color var(--tr),background var(--tr)}
+.bookmark-btn:hover,.bookmark-btn.active{color:var(--amber)}
+.bookmark-btn:hover{background:var(--ambl)}
+.bookmark-btn svg{width:16px;height:16px}
+.q-body{padding:20px 18px 14px}
+.q-text{font-size:16px;font-weight:600;line-height:1.55;margin-bottom:18px}
+.options-list{display:flex;flex-direction:column;gap:8px}
+.option-btn{display:flex;align-items:flex-start;gap:12px;padding:11px 16px;border-radius:var(--rs);border:1.5px solid var(--border);background:var(--bg);color:var(--text);font-size:14px;text-align:left;cursor:pointer;width:100%;line-height:1.45;transition:border-color var(--tr),background var(--tr),transform .1s}
+.option-btn:hover:not(:disabled):not(.correct):not(.wrong){border-color:var(--ac);background:var(--acl);transform:translateX(2px);box-shadow:0 4px 16px rgba(27,111,82,.15)}
+.option-label{flex-shrink:0;width:24px;height:24px;border-radius:50%;background:var(--bg2);border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--text2);transition:background var(--tr),border-color var(--tr),color var(--tr)}
+.option-btn.correct{border-color:var(--green);background:var(--greenl);animation:flashG .6s ease forwards}
+.option-btn.correct .option-label{background:var(--green);border-color:var(--green);color:#fff}
+.option-btn.wrong{border-color:var(--red);background:var(--redl);animation:flashR .6s ease forwards}
+.option-btn.wrong .option-label{background:var(--red);border-color:var(--red);color:#fff}
+.option-btn:disabled{cursor:default;transform:none!important}
+.option-icon{margin-left:auto;flex-shrink:0;font-size:16px}
+@keyframes flashG{0%{box-shadow:0 0 0 0 rgba(27,138,82,.5)}70%{box-shadow:0 0 0 10px rgba(27,138,82,0)}100%{box-shadow:0 0 0 0 rgba(27,138,82,0)}}
+@keyframes flashR{0%{box-shadow:0 0 0 0 rgba(192,57,43,.5)}70%{box-shadow:0 0 0 10px rgba(192,57,43,0)}100%{box-shadow:0 0 0 0 rgba(192,57,43,0)}}
+
+/* EXPLANATION */
+.explanation-box{margin:14px 18px 16px;border-radius:var(--rs);border:1.5px solid var(--green);background:var(--greenl);overflow:hidden;animation:fadeIn .25s ease}
+.exp-header{display:flex;align-items:center;gap:8px;padding:9px 14px;background:var(--green);color:#fff;font-size:13px;font-weight:600}
+.exp-body{padding:12px 14px;font-size:13.5px;line-height:1.6}
+.exp-answer{font-weight:700;color:var(--green);margin-bottom:5px;font-size:14px}
+.show-exp-btn{display:flex;align-items:center;gap:5px;font-size:12.5px;color:var(--ac);font-weight:600;margin:12px 18px;cursor:pointer}
+.show-exp-btn:hover{text-decoration:underline}
+
+/* NAV BUTTONS */
+.nav-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:16px}
+.nav-btn{display:flex;align-items:center;gap:6px;padding:10px 18px;border-radius:var(--rs);font-size:14px;font-weight:600;transition:background var(--tr),color var(--tr),transform .1s}
+.nav-btn:active{transform:scale(.97)}
+.nav-btn.primary{background:var(--ac);color:#fff}
+.nav-btn.primary:hover{background:var(--ac2)}
+.nav-btn.secondary{background:var(--bg2);color:var(--text2);border:1.5px solid var(--border)}
+.nav-btn.secondary:hover{background:var(--border);color:var(--text)}
+.nav-btn svg{width:16px;height:16px}
+.nav-btn.view-all-btn{background:var(--ac);color:#fff;border:none}
+.nav-btn.view-all-btn:hover{background:var(--ac2)}
+.q-counter{font-size:13px;color:var(--text2);font-weight:500;text-align:center}
+.skip-btn{font-size:11px;color:var(--text3);margin-top:3px;cursor:pointer;background:none;border:none;display:block;transition:color var(--tr)}
+.skip-btn:hover{color:var(--amber)}
+.kbd-hint{text-align:center;font-size:11px;color:var(--text3);margin-top:10px}
+kbd{display:inline-block;background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1px 6px;font-family:monospace;font-size:10px;color:var(--text2)}
+
+/* JUMP BAR */
+#jump-bar{background:var(--card);border:1.5px solid var(--border);border-radius:var(--r);padding:16px 18px;margin-top:16px;display:none}
+#jump-bar.open{display:block;animation:fadeIn .2s}
+.jump-label{font-size:12px;font-weight:600;color:var(--text2);margin-bottom:10px}
+.jump-grid{display:flex;flex-wrap:wrap;gap:5px}
+.jump-btn{width:34px;height:34px;border-radius:var(--rs);border:1.5px solid var(--border);background:var(--bg);color:var(--text2);font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all var(--tr)}
+.jump-btn:hover{border-color:var(--ac);color:var(--ac);background:var(--acl)}
+.jump-btn.current{background:var(--ac);border-color:var(--ac);color:#fff}
+.jump-btn.answered-c{background:var(--greenl);border-color:var(--green);color:var(--green)}
+.jump-btn.answered-w{background:var(--redl);border-color:var(--red);color:var(--red)}
+.jump-btn.bookmarked{border-style:dashed;border-color:var(--amber);color:var(--amber)}
+.jump-legend{display:flex;gap:12px;margin-top:10px;font-size:11px;color:var(--text3);flex-wrap:wrap}
+.jump-legend-item{display:flex;align-items:center;gap:5px}
+.jump-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0}
+
+/* RESULT */
+.result-card{background:var(--card);border:1.5px solid var(--border);border-radius:var(--r);box-shadow:var(--shl);overflow:hidden;margin-bottom:20px}
+.result-hero{padding:36px 24px 28px;text-align:center;background:linear-gradient(135deg,var(--ac),var(--ac2));color:#fff}
+.result-emoji{font-size:56px;margin-bottom:10px}
+.result-title{font-family:var(--fd);font-size:28px;margin-bottom:6px}
+.result-msg{font-size:15px;opacity:.88}
+.result-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr))}
+.result-stat{padding:20px 16px;text-align:center;border-right:1px solid var(--border);border-bottom:1px solid var(--border)}
+.result-stat:last-child{border-right:none}
+.result-stat .val{font-family:var(--fd);font-size:32px;color:var(--ac);display:block}
+.result-stat .lbl{font-size:12px;color:var(--text2);font-weight:500}
+.result-actions{padding:18px;display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.topic-breakdown{padding:16px 18px;border-top:1px solid var(--border)}
+.tb-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text3);margin-bottom:12px}
+.tb-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;font-size:12px}
+.tb-label{width:130px;flex-shrink:0;color:var(--text2);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tb-track{flex:1;height:6px;background:var(--bg2);border-radius:99px;overflow:hidden}
+.tb-fill{height:100%;border-radius:99px;transition:width .8s cubic-bezier(.4,0,.2,1)}
+.tb-pct{width:36px;text-align:right;font-weight:700;color:var(--text2)}
+
+/* REVIEW */
+.review-card{background:var(--card);border:1.5px solid var(--border);border-radius:var(--r);margin-bottom:14px;overflow:hidden}
+.review-header{display:flex;align-items:center;gap:8px;padding:10px 16px;background:var(--bg2);border-bottom:1px solid var(--border);flex-wrap:wrap}
+.review-status{margin-left:auto;font-size:18px}
+.review-body{padding:14px 16px}
+.review-q{font-size:14.5px;font-weight:600;margin-bottom:12px;line-height:1.5}
+.review-opts{display:flex;flex-direction:column;gap:5px;margin-bottom:10px}
+.review-opt{padding:7px 12px;border-radius:var(--rs);font-size:13px;border:1px solid var(--border)}
+.review-opt.correct-ans{border-color:var(--green);background:var(--greenl);color:var(--green);font-weight:600}
+.review-opt.user-wrong{border-color:var(--red);background:var(--redl);color:var(--red);font-weight:600}
+.review-exp{font-size:12.5px;color:var(--text);background:var(--acl);border-left:3px solid var(--ac);border-radius:0 var(--rs) var(--rs) 0;padding:10px 14px;line-height:1.55}
+.review-filter-bar{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.rfbtn{padding:7px 14px;border-radius:99px;border:1.5px solid var(--border);background:var(--card);color:var(--text2);font-size:12px;font-weight:600;cursor:pointer;transition:all var(--tr)}
+.rfbtn.active{background:var(--ac);border-color:var(--ac);color:#fff}
+
+/* ALL QUESTIONS VIEW */
+.all-q-card{background:var(--card);border:1.5px solid var(--border);border-radius:var(--r);margin-bottom:14px;overflow:hidden;transition:border-color var(--tr)}
+.all-q-card:hover{border-color:var(--ac)}
+.all-q-header{display:flex;align-items:center;gap:8px;padding:10px 16px;background:var(--bg2);border-bottom:1px solid var(--border);flex-wrap:wrap}
+.all-q-body{padding:16px 16px 10px}
+.all-q-text{font-size:15px;font-weight:600;line-height:1.5;margin-bottom:14px}
+.all-opts{display:flex;flex-direction:column;gap:7px;margin-bottom:10px}
+.all-opt{display:flex;align-items:flex-start;gap:10px;padding:10px 14px;border-radius:var(--rs);border:1.5px solid var(--border);background:var(--bg);color:var(--text);font-size:14px;text-align:left;cursor:pointer;width:100%;line-height:1.45;transition:border-color var(--tr),background var(--tr),transform .1s}
+.all-opt:hover:not(:disabled){border-color:var(--ac);background:var(--acl);transform:translateX(2px)}
+.all-opt-lbl{flex-shrink:0;width:24px;height:24px;border-radius:50%;background:var(--bg2);border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--text2);transition:all var(--tr)}
+.all-opt.ao-correct{border-color:var(--green);background:var(--greenl)}
+.all-opt.ao-correct .all-opt-lbl{background:var(--green);border-color:var(--green);color:#fff}
+.all-opt.ao-wrong{border-color:var(--red);background:var(--redl)}
+.all-opt.ao-wrong .all-opt-lbl{background:var(--red);border-color:var(--red);color:#fff}
+.all-opt:disabled{cursor:default;transform:none!important}
+.all-exp{margin:0 0 12px;padding:10px 14px;border-radius:var(--rs);background:var(--acl);border-left:3px solid var(--ac);font-size:13px;line-height:1.6;display:none}
+.all-exp.visible{display:block;animation:fadeIn .2s}
+.all-exp-ans{font-weight:700;color:var(--green);margin-bottom:4px;font-size:13.5px}
+
+/* MISC */
+.hidden{display:none!important}
+.no-results,.all-no-results{text-align:center;padding:40px 20px;color:var(--text3);font-size:14px}
+.section-title{font-family:var(--fd);font-size:20px;margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.back-link{font-size:13px;color:var(--ac);display:flex;align-items:center;gap:4px;cursor:pointer;margin-bottom:14px;font-weight:500}
+.back-link:hover{text-decoration:underline}
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--card);border:1px solid var(--border);border-radius:var(--rs);padding:10px 20px;font-size:13px;font-weight:600;box-shadow:var(--shl);z-index:9999;transition:transform .3s cubic-bezier(.34,1.56,.64,1);white-space:nowrap;pointer-events:none}
+#toast.show{transform:translateX(-50%) translateY(0)}
+#toast.toast-correct{border-color:var(--green);color:var(--green)}
+#toast.toast-wrong{border-color:var(--red);color:var(--red)}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--bg2)}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:99px}
+
+/* RESPONSIVE */
+/* ── Laptop / large tablet (≤1024px) ── */
+@media(max-width:1024px){
+  body{font-size:15px}
+  .q-text{font-size:16px}
+  .option-btn{font-size:14px}
+  .all-q-text{font-size:15px}
+  .all-opt{font-size:14px}
+  .result-stat .val{font-size:28px}
+  .result-title{font-size:26px}
+}
+/* ── Tablet (≤768px) ── */
+@media(max-width:768px){
+  body{font-size:14px}
+  .navbar{padding:0 12px}
+  .logo{font-size:14px}
+  .nav-row1{height:48px;gap:8px}
+  .progress-label{font-size:9px}
+  #timer-display{font-size:11px;padding:3px 8px}
+  .stat-pill{font-size:11px;padding:3px 8px}
+  .filter-select{font-size:12px;min-width:80px}
+  .nav-btn{font-size:13px;padding:8px 14px}
+  .nav-btn svg{width:14px;height:14px}
+  .q-number{font-size:11px}
+  .badge{font-size:10px;padding:2px 7px}
+  .q-body{padding:16px 14px 12px}
+  .q-text{font-size:15px;line-height:1.5}
+  .option-btn{font-size:13.5px;padding:10px 14px;gap:10px}
+  .option-label{width:22px;height:22px;font-size:11px}
+  .exp-body{font-size:13px}
+  .exp-answer{font-size:13px}
+  .show-exp-btn{font-size:12px}
+  .q-counter{font-size:12px}
+  .skip-btn{font-size:11px}
+  .kbd-hint{font-size:10px}
+  .jump-btn{width:32px;height:32px;font-size:11px}
+  .result-grid{grid-template-columns:repeat(3,1fr)}
+  .result-title{font-size:24px}
+  .result-msg{font-size:14px}
+  .result-stat .val{font-size:26px}
+  .result-stat .lbl{font-size:11px}
+  .review-q{font-size:14px}
+  .review-opt{font-size:12.5px}
+  .review-exp{font-size:12px}
+  .all-q-text{font-size:14.5px}
+  .all-opt{font-size:13.5px;padding:9px 12px}
+  .all-exp{font-size:12.5px}
+  .rfbtn{font-size:12px;padding:6px 12px}
+  #app{padding:14px 12px 60px}
+}
+/* ── Mobile (≤480px) ── */
+@media(max-width:480px){
+  body{font-size:13px}
+  .navbar{padding:0 10px}
+  .logo{font-size:13px;letter-spacing:0}
+  .nav-row1{height:44px;gap:6px}
+  .progress-label{display:none}
+  #timer-display{font-size:10px;padding:2px 7px}
+  .icon-btn{width:30px;height:30px}
+  .icon-btn svg{width:15px;height:15px}
+  /* Stats row – 2 per row wrap */
+  .nav-row2{flex-wrap:wrap;gap:4px;padding:5px 0}
+  .stat-pill{font-size:10px;padding:2px 7px}
+  /* Filter row – 2 selects per row */
+  .nav-row3{gap:4px;padding:5px 0;flex-wrap:wrap}
+  .filter-select{width:calc(50% - 4px);min-width:unset;flex:none;font-size:11px;padding:6px 24px 6px 8px}
+  .nav-filter-btns{width:100%;gap:4px}
+  .nav-filter-btns button{flex:1;justify-content:center;font-size:11px;padding:7px 8px}
+  /* Question card */
+  .card-header{padding:8px 10px;gap:5px}
+  .q-number{font-size:10px;padding:2px 8px}
+  .badge{font-size:9px;padding:2px 6px}
+  .bookmark-btn{width:24px;height:24px}
+  .q-body{padding:12px 10px 10px}
+  .q-text{font-size:13.5px;line-height:1.5;margin-bottom:14px}
+  .option-btn{font-size:12.5px;padding:9px 10px;gap:8px}
+  .option-label{width:20px;height:20px;font-size:10px;flex-shrink:0}
+  .option-icon{font-size:14px}
+  .show-exp-btn{font-size:11px;margin:8px 12px}
+  .exp-header{font-size:12px;padding:8px 12px}
+  .exp-body{font-size:12px;padding:10px 12px}
+  .exp-answer{font-size:12.5px}
+  /* Nav row */
+  .nav-row{gap:6px;margin-top:10px}
+  .nav-btn{font-size:12px;padding:8px 12px;gap:4px}
+  .nav-btn svg{width:13px;height:13px}
+  .q-counter{font-size:11px}
+  .skip-btn{font-size:10px}
+  .kbd-hint{display:none}
+  /* Jump grid */
+  .jump-btn{width:28px;height:28px;font-size:10px}
+  .jump-label{font-size:11px}
+  .jump-legend{font-size:10px;gap:8px}
+  /* Results */
+  .result-hero{padding:20px 14px 16px}
+  .result-emoji{font-size:40px}
+  .result-title{font-size:20px}
+  .result-msg{font-size:13px}
+  .result-grid{grid-template-columns:repeat(2,1fr)}
+  .result-stat{padding:14px 10px}
+  .result-stat .val{font-size:22px}
+  .result-stat .lbl{font-size:10px}
+  .result-actions{padding:12px;gap:8px}
+  /* Review */
+  .review-q{font-size:13px}
+  .review-opt{font-size:12px;padding:6px 10px}
+  .review-exp{font-size:11.5px;padding:8px 10px}
+  .rfbtn{font-size:11px;padding:5px 10px}
+  .section-title{font-size:17px}
+  .back-link{font-size:12px}
+  /* View All */
+  .all-q-text{font-size:13px}
+  .all-opt{font-size:12.5px;padding:8px 10px;gap:8px}
+  .all-opt-lbl{width:20px;height:20px;font-size:10px}
+  .all-exp{font-size:11.5px;padding:8px 10px}
+  .all-exp-ans{font-size:12px}
+  #app{padding:10px 8px 60px}
+}
+/* ── Small phones (≤360px) ── */
+@media(max-width:360px){
+  .logo{font-size:12px}
+  .q-text{font-size:13px}
+  .option-btn{font-size:12px;padding:8px 9px}
+  .nav-btn{font-size:11px;padding:7px 10px}
+  .filter-select{font-size:10px}
+  .result-stat .val{font-size:20px}
+  .result-title{font-size:18px}
+}
+</style>
+</head>
+<body>
+<div id="toast"></div>
+
+<!-- TOP BAR -->
+<div id="top-bar"><div class="navbar">
+  <div class="nav-row1">
+    <div class="logo">MCQ Exam Prep</div>
+    <div id="progress-wrap">
+      <div class="progress-label"><span id="prog-label">Question 1 of 0</span><span id="prog-pct">0%</span></div>
+      <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+    </div>
+    <div id="timer-display">00:00</div>
+    <div class="nav-icon-group">
+      <button class="icon-btn" id="dark-toggle" title="Toggle dark mode">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+      <button class="icon-btn" id="jump-toggle" title="Jump to question">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      </button>
+      <button class="icon-btn" id="restart-btn" title="Restart quiz">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.85"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="nav-row2">
+    <div class="stat-pill">Total <span id="s-total">0</span></div>
+    <div class="stat-pill">✎ Attempted <span id="s-attempted">0</span></div>
+    <div class="stat-pill correct">✓ Correct <span id="s-correct">0</span></div>
+    <div class="stat-pill wrong">✗ Wrong <span id="s-wrong">0</span></div>
+    <div class="stat-pill acc">⚡ Accuracy <span id="s-acc">—</span></div>
+  </div>
+  <div class="nav-row3">
+    <select class="filter-select" id="filter-level"><option value="all">All Levels</option><option value="Basic">Basic</option><option value="Intermediate">Intermediate</option><option value="Advanced">Advanced</option></select>
+    <select class="filter-select" id="filter-topic"><option value="all">All Topics</option></select>
+    <select class="filter-select" id="filter-type"><option value="all">All Types</option></select>
+    <div class="nav-filter-btns">
+      <button class="nav-btn secondary" id="bookmark-filter-btn">★ Bookmarked</button>
+      <button class="nav-btn view-all-btn" id="view-all-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg> View All
+      </button>
+    </div>
+  </div>
+</div></div>
+
+<!-- MAIN APP -->
+<div id="app">
+
+  <!-- QUIZ SCREEN -->
+  <div id="quiz-screen" class="screen active">
+    <div id="quiz-body">
+      <div id="question-card">
+        <div class="card-header" id="card-header"></div>
+        <div class="q-body">
+          <div class="q-text" id="q-text"></div>
+          <div class="options-list" id="options-list"></div>
+        </div>
+        <button class="show-exp-btn hidden" id="show-exp-btn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> Show Explanation
+        </button>
+        <div id="explanation-box" class="hidden"></div>
+      </div>
+      <div class="nav-row" style="margin-top:14px">
+        <button class="nav-btn secondary" id="prev-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg> Prev</button>
+        <div style="text-align:center"><div class="q-counter" id="q-counter">1 / 0</div><button class="skip-btn" id="skip-btn">Skip ↩</button></div>
+        <button class="nav-btn primary" id="next-btn">Next <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></button>
+      </div>
+      <div class="kbd-hint">Keyboard: <kbd>A</kbd><kbd>B</kbd><kbd>C</kbd><kbd>D</kbd> — options &nbsp;|&nbsp; <kbd>←</kbd><kbd>→</kbd> — navigate &nbsp;|&nbsp; <kbd>E</kbd> — explanation</div>
+      <div id="jump-bar">
+        <div class="jump-label">Jump to Question</div>
+        <div class="jump-grid" id="jump-grid"></div>
+        <div class="jump-legend">
+          <div class="jump-legend-item"><div class="jump-dot" style="background:var(--green)"></div> Correct</div>
+          <div class="jump-legend-item"><div class="jump-dot" style="background:var(--red)"></div> Wrong</div>
+          <div class="jump-legend-item"><div class="jump-dot" style="background:var(--bg2);border:1.5px dashed var(--amber)"></div> Bookmarked</div>
+          <div class="jump-legend-item"><div class="jump-dot" style="background:var(--ac)"></div> Current</div>
+        </div>
+      </div>
+      <div style="text-align:center;margin-top:20px">
+        <button class="nav-btn primary" id="finish-btn">Finish Quiz &amp; See Results <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px"><polyline points="20 6 9 17 4 12"/></svg></button>
+      </div>
+    </div>
+    <div id="all-panel" style="display:none"><div id="all-list"></div></div>
+  </div>
+
+  <!-- RESULT SCREEN -->
+  <div id="result-screen" class="screen">
+    <div class="result-card">
+      <div class="result-hero">
+        <div class="result-emoji" id="res-emoji">🎉</div>
+        <div class="result-title" id="res-title">Quiz Complete!</div>
+        <div class="result-msg" id="res-msg">Here's how you did</div>
+      </div>
+      <div class="result-grid">
+        <div class="result-stat"><span class="val" id="res-score">0</span><span class="lbl">Score</span></div>
+        <div class="result-stat"><span class="val" id="res-correct">0</span><span class="lbl">Correct</span></div>
+        <div class="result-stat"><span class="val" id="res-wrong">0</span><span class="lbl">Wrong</span></div>
+        <div class="result-stat"><span class="val" id="res-skipped">0</span><span class="lbl">Skipped</span></div>
+        <div class="result-stat"><span class="val" id="res-pct">0%</span><span class="lbl">Accuracy</span></div>
+        <div class="result-stat"><span class="val" id="res-time">—</span><span class="lbl">Time Taken</span></div>
+      </div>
+      <div id="topic-breakdown" class="topic-breakdown"></div>
+      <div class="result-actions">
+        <button class="nav-btn primary" id="review-btn">📋 Review Answers</button>
+        <button class="nav-btn secondary" id="restart-btn2">🔄 Restart Quiz</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- REVIEW SCREEN -->
+  <div id="review-screen" class="screen">
+    <div class="back-link" id="back-to-result"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg> Back to Results</div>
+    <div class="section-title">📋 Answer Review</div>
+    <div class="review-filter-bar">
+      <button class="rfbtn active" data-rf="all">All</button>
+      <button class="rfbtn" data-rf="correct">✓ Correct</button>
+      <button class="rfbtn" data-rf="wrong">✗ Wrong</button>
+      <button class="rfbtn" data-rf="skipped">— Skipped</button>
+      <button class="rfbtn" data-rf="bookmarked">★ Bookmarked</button>
+    </div>
+    <div id="review-list"></div>
+  </div>
+
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════
+   ▼▼▼  ADD YOUR QUESTIONS HERE  ▼▼▼
+   Format:
+   {
+     "id": 1,
+     "level": "Basic",          // Basic | Intermediate | Advanced
+     "type": "Concept",         // any label
+     "topic": "Topic Name",     // used in filter dropdown
+     "question": "Question?",
+     "options": ["A text","B text","C text","D text"],
+     "answer": "A",             // A | B | C | D
+     "explanation": "Reason."
+   }
+═══════════════════════════════════════════════════════ */
+const QUESTIONS = [
+  {"id": 1, "level": "Intermediate", "type": "Current Affairs", "topic": "Men's International Cricket & IPL", "question": "Which team won the ICC Men's T20 World Cup 2026, defeating New Zealand in the final by 96 runs?", "options": ["Australia", "India", "England", "South Africa"], "answer": "B", "explanation": "India (255/5) beat NZ (159 all out) at Narendra Modi Stadium, Ahmedabad on 8 March 2026."},
+  {"id": 2, "level": "Intermediate", "type": "Current Affairs", "topic": "Men's International Cricket & IPL", "question": "The T20 World Cup 2026 was jointly hosted by India and ______.", "options": ["Bangladesh", "UAE", "Sri Lanka", "Pakistan"], "answer": "C", "explanation": "India & Sri Lanka co-hosted; 20 teams; Super 8 format."},
+  {"id": 3, "level": "Intermediate", "type": "Current Affairs", "topic": "Men's International Cricket & IPL", "question": "How many T20 World Cup titles has India won after the 2026 edition?", "options": ["Two", "Four", "One", "Three"], "answer": "D", "explanation": "2007 (Dhoni), 2024 (Rohit), 2026 (Suryakumar Yadav) - the most by any team."},
+  {"id": 4, "level": "Basic", "type": "Current Affairs", "topic": "Men's International Cricket & IPL", "question": "Who was named Player of the Tournament at the T20 World Cup 2026?", "options": ["Jasprit Bumrah", "Sanju Samson", "Abhishek Sharma", "Sahibzada Farhan"], "answer": "B", "explanation": "Samson scored 321 runs at an average of 80.25. Farhan (Pakistan) was the top run-scorer with 383."},
+  {"id": 5, "level": "Basic", "type": "Current Affairs", "topic": "Men's International Cricket & IPL", "question": "The next ICC Men's T20 World Cup (2028) will be hosted by:", "options": ["USA & West Indies", "England", "Australia & New Zealand", "India"], "answer": "C", "explanation": "ICC announced Australia & New Zealand for 2028."},
+  {"id": 6, "level": "Intermediate", "type": "Current Affairs", "topic": "Men's International Cricket & IPL", "question": "India defeated Pakistan in the 2025 Asia Cup final at Dubai to win their ______ title.", "options": ["seventh", "eighth", "ninth", "tenth"], "answer": "C", "explanation": "5-wicket win on 28 Sep 2025; first India-Pakistan final in Asia Cup history. Format: T20."},
+  {"id": 7, "level": "Basic", "type": "Current Affairs", "topic": "Men's International Cricket & IPL", "question": "Who scored an unbeaten 69 to win the Asia Cup 2025 final for India?", "options": ["Shivam Dube", "Tilak Varma", "Suryakumar Yadav", "Rinku Singh"], "answer": "B", "explanation": "Tilak Varma 69* chased down Pakistan's 146; Kuldeep Yadav took 4 wickets."},
+  {"id": 8, "level": "Intermediate", "type": "Current Affairs", "topic": "Men's International Cricket & IPL", "question": "India won the ICC Champions Trophy 2025 by defeating which team in the final at Dubai?", "options": ["Australia", "South Africa", "New Zealand", "Pakistan"], "answer": "C", "explanation": "India won by 4 wickets - their 3rd Champions Trophy (2002 shared, 2013, 2025). Captain: Rohit Sharma."},
+  {"id": 9, "level": "Basic", "type": "Current Affairs", "topic": "Men's International Cricket & IPL", "question": "Which team won the 2025 ICC World Test Championship final at Lord's, claiming its maiden WTC title?", "options": ["Australia", "India", "New Zealand", "South Africa"], "answer": "D", "explanation": "South Africa beat Australia. The 2027 final will be played at The Oval, London."},
+  {"id": 10, "level": "Intermediate", "type": "Current Affairs", "topic": "Men's International Cricket & IPL", "question": "The ICC Men's ODI World Cup 2027 will be hosted by South Africa, Zimbabwe and ______.", "options": ["Kenya", "Namibia", "Botswana", "Uganda"], "answer": "B", "explanation": "Namibia hosts its first senior ICC event. 12 venues incl. Windhoek and Victoria Falls (Zimbabwe)."},
+  {"id": 11, "level": "Intermediate", "type": "Current Affairs", "topic": "Men's International Cricket & IPL", "question": "Which franchise won IPL 2026 by beating Gujarat Titans in the final at Ahmedabad?", "options": ["Chennai Super Kings", "Mumbai Indians", "Royal Challengers Bengaluru", "Kolkata Knight Riders"], "answer": "C", "explanation": "RCB won by 5 wickets - their 2nd consecutive title (first title was 2025)."},
+  {"id": 12, "level": "Basic", "type": "Current Affairs", "topic": "Men's International Cricket & IPL", "question": "Who won the Orange Cap in IPL 2026 with 776 runs?", "options": ["Virat Kohli", "Vaibhav Sooryavanshi", "Shubman Gill", "Sai Sudharsan"], "answer": "B", "explanation": "Purple Cap: Kagiso Rabada (29 wkts)."},
+  {"id": 13, "level": "Basic", "type": "Current Affairs", "topic": "Men's International Cricket & IPL", "question": "Cricket will be played at the Olympic Games again from LA 2028 after a gap of how many years?", "options": ["100", "112", "128", "92"], "answer": "C", "explanation": "Last played at Paris 1900. Format at LA 2028: T20."},
+  {"id": 14, "level": "Intermediate", "type": "Current Affairs", "topic": "Men's International Cricket & IPL", "question": "Who is the current Chairman of the International Cricket Council (ICC)?", "options": ["Greg Barclay", "Jay Shah", "Mithun Manhas", "Roger Binny"], "answer": "B", "explanation": "Jay Shah took over on 1 Dec 2024 - the youngest ICC chairman ever."},
+  {"id": 15, "level": "Intermediate", "type": "Current Affairs", "topic": "Women's Cricket & Domestic Cricket", "question": "Which country won the ICC Women's Cricket World Cup 2025, defeating South Africa in the final?", "options": ["Australia", "England", "India", "New Zealand"], "answer": "C", "explanation": "India won by 52 runs at DY Patil Stadium, Navi Mumbai - maiden Women's World Cup title."},
+  {"id": 16, "level": "Intermediate", "type": "Current Affairs", "topic": "Women's Cricket & Domestic Cricket", "question": "Who was named Player of the Tournament at the Women's Cricket World Cup 2025?", "options": ["Smriti Mandhana", "Shafali Verma", "Laura Wolvaardt", "Deepti Sharma"], "answer": "D", "explanation": "Deepti Sharma - first player to score 200+ runs and take 20+ wickets in a Women's WC."},
+  {"id": 17, "level": "Basic", "type": "Current Affairs", "topic": "Women's Cricket & Domestic Cricket", "question": "Who scored the most runs (571) in the Women's World Cup 2025?", "options": ["Laura Wolvaardt", "Smriti Mandhana", "Harmanpreet Kaur", "Alyssa Healy"], "answer": "A", "explanation": "Wolvaardt's 571 is the most in any single Women's WC edition."},
+  {"id": 18, "level": "Basic", "type": "Current Affairs", "topic": "Women's Cricket & Domestic Cricket", "question": "India became the ______ team to win the Women's World Cup, after Australia, England and New Zealand.", "options": ["third", "fourth", "fifth", "second"], "answer": "B", "explanation": "India = 4th champion nation and the first from Asia."},
+  {"id": 19, "level": "Basic", "type": "Current Affairs", "topic": "Women's Cricket & Domestic Cricket", "question": "Who won the Women's Premier League (WPL) 2026, beating Delhi Capitals in the final at Vadodara?", "options": ["Mumbai Indians", "UP Warriorz", "Royal Challengers Bengaluru", "Gujarat Giants"], "answer": "C", "explanation": "RCB won by 6 wickets - their 2nd WPL title; Smriti Mandhana was Player of the Match."},
+  {"id": 20, "level": "Intermediate", "type": "Current Affairs", "topic": "Women's Cricket & Domestic Cricket", "question": "Which team won the Ranji Trophy 2025-26 in its maiden final appearance?", "options": ["Karnataka", "Vidarbha", "Jammu & Kashmir", "Bengal"], "answer": "C", "explanation": "J&K won on first-innings lead over Karnataka at Hubballi - title after 67 years; captain Paras Dogra."},
+  {"id": 21, "level": "Basic", "type": "Current Affairs", "topic": "Women's Cricket & Domestic Cricket", "question": "The Ranji Trophy 2025-26 final was played at which venue?", "options": ["Chinnaswamy Stadium, Bengaluru", "KSCA Stadium, Hubballi", "Eden Gardens, Kolkata", "Wankhede Stadium, Mumbai"], "answer": "B", "explanation": "KSCA Cricket Stadium, Hubballi (Karnataka)."},
+  {"id": 22, "level": "Basic", "type": "Current Affairs", "topic": "Women's Cricket & Domestic Cricket", "question": "Who was named Player of the Tournament in Ranji Trophy 2025-26?", "options": ["Yash Dhull", "Paras Dogra", "Auqib Nabi Dar", "Mohammed Shami"], "answer": "C", "explanation": "Auqib Nabi Dar was named Player of the Tournament."},
+  {"id": 23, "level": "Basic", "type": "Current Affairs", "topic": "Women's Cricket & Domestic Cricket", "question": "Which team won the Ranji Trophy 2022-23 (asked in OAVS 2024 as 'Ranji Trophy 2023')?", "options": ["Karnataka", "Saurashtra", "Mumbai", "Bengal"], "answer": "B", "explanation": "Saurashtra beat Bengal. (Vidarbha won in 2024-25; J&K in 2025-26.)"},
+  {"id": 24, "level": "Basic", "type": "Current Affairs", "topic": "Women's Cricket & Domestic Cricket", "question": "Which zone won the Duleep Trophy 2025-26, ending an 11-year wait?", "options": ["West Zone", "North Zone", "Central Zone", "South Zone"], "answer": "C", "explanation": "Central Zone (captain Rajat Patidar) beat South Zone - their 7th title."},
+  {"id": 25, "level": "Basic", "type": "Current Affairs", "topic": "Women's Cricket & Domestic Cricket", "question": "Which zone has won the most Duleep Trophy titles?", "options": ["North Zone", "West Zone", "South Zone", "East Zone"], "answer": "B", "explanation": "West Zone - 19 titles."},
+  {"id": 26, "level": "Basic", "type": "Current Affairs", "topic": "Women's Cricket & Domestic Cricket", "question": "Which team won the Syed Mushtaq Ali Trophy 2025-26 for the first time?", "options": ["Haryana", "Mumbai", "Jharkhand", "Tamil Nadu"], "answer": "C", "explanation": "Jharkhand (captain Ishan Kishan) beat Haryana in the final on 18 Dec 2025."},
+  {"id": 27, "level": "Basic", "type": "Current Affairs", "topic": "Women's Cricket & Domestic Cricket", "question": "Vidarbha won the Vijay Hazare Trophy 2025-26 by defeating:", "options": ["Karnataka", "Saurashtra", "Punjab", "Delhi"], "answer": "B", "explanation": "38-run win in the final at BCCI CoE, Bengaluru (18 Jan 2026) - maiden title."},
+  {"id": 28, "level": "Intermediate", "type": "Current Affairs", "topic": "Football", "question": "Which country won the FIFA World Cup 2026, beating Argentina in the final?", "options": ["France", "Spain", "England", "Brazil"], "answer": "B", "explanation": "Spain 1-0 Argentina after extra time (Ferran Torres, 106'). Spain's second title after 2010."},
+  {"id": 29, "level": "Intermediate", "type": "Current Affairs", "topic": "Football", "question": "The FIFA World Cup 2026 was co-hosted by how many countries and with how many teams?", "options": ["2 hosts; 32 teams", "3 hosts; 48 teams", "3 hosts; 32 teams", "2 hosts; 48 teams"], "answer": "B", "explanation": "USA, Canada & Mexico; 48 teams in 12 groups of four."},
+  {"id": 30, "level": "Basic", "type": "Current Affairs", "topic": "Football", "question": "Who won the Golden Boot at the FIFA World Cup 2026?", "options": ["Lionel Messi", "Erling Haaland", "Kylian Mbappe", "Harry Kane"], "answer": "C", "explanation": "Mbappe finished with 10 goals. Golden Ball went to Rodri (Spain)."},
+  {"id": 31, "level": "Basic", "type": "Current Affairs", "topic": "Football", "question": "The final of the FIFA World Cup 2026 was played at:", "options": ["SoFi Stadium, Los Angeles", "Estadio Azteca, Mexico City", "AT&T Stadium, Dallas", "MetLife Stadium, New Jersey"], "answer": "D", "explanation": "MetLife Stadium, East Rutherford (New York/New Jersey Stadium) on 19 July 2026."},
+  {"id": 32, "level": "Intermediate", "type": "Current Affairs", "topic": "Football", "question": "Who won the men's Ballon d'Or 2025?", "options": ["Lamine Yamal", "Ousmane Dembele", "Lionel Messi", "Vinicius Junior"], "answer": "B", "explanation": "Dembele (PSG) after a treble-winning season. Yamal finished 2nd and won the Kopa Trophy."},
+  {"id": 33, "level": "Basic", "type": "Current Affairs", "topic": "Football", "question": "Aitana Bonmati won the women's Ballon d'Or in 2025 - it was her ______ consecutive win.", "options": ["second", "third", "fourth", "first"], "answer": "B", "explanation": "Third straight (2023, 2024, 2025) - first woman to do so."},
+  {"id": 34, "level": "Basic", "type": "Current Affairs", "topic": "Football", "question": "Which club won the UEFA Champions League 2025-26 final in Budapest on penalties?", "options": ["Arsenal", "Bayern Munich", "Paris Saint-Germain", "Real Madrid"], "answer": "C", "explanation": "PSG beat Arsenal 4-3 on penalties (1-1 after extra time) - back-to-back titles."},
+  {"id": 35, "level": "Basic", "type": "Current Affairs", "topic": "Football", "question": "Which club won the Premier League 2025-26, ending a 22-year wait for the title?", "options": ["Manchester City", "Liverpool", "Arsenal", "Chelsea"], "answer": "C", "explanation": "Arsenal (manager Mikel Arteta) finished on 85 points; Man City were 2nd."},
+  {"id": 36, "level": "Basic", "type": "Current Affairs", "topic": "Football", "question": "Which team won the Santosh Trophy 2025-26 (final in Assam) by defeating Kerala?", "options": ["West Bengal", "Services", "Punjab", "Railways"], "answer": "B", "explanation": "Services won 1-0 in extra time - their 8th title."},
+  {"id": 37, "level": "Basic", "type": "Current Affairs", "topic": "Football", "question": "Which state/team has won the most Santosh Trophy titles?", "options": ["Kerala", "Punjab", "Services", "West Bengal"], "answer": "D", "explanation": "West Bengal - 33 titles."},
+  {"id": 38, "level": "Intermediate", "type": "Current Affairs", "topic": "Multi-Sport Events: CWG, Asian Games, Olympics & Khelo India", "question": "The Commonwealth Games 2026 were held in which city?", "options": ["Birmingham", "Glasgow", "Gold Coast", "Ahmedabad"], "answer": "B", "explanation": "Glasgow, Scotland (23 July-2 August 2026) - a scaled-down 10-sport edition."},
+  {"id": 39, "level": "Intermediate", "type": "Current Affairs", "topic": "Multi-Sport Events: CWG, Asian Games, Olympics & Khelo India", "question": "What was India's final position at CWG 2026 and how many medals did it win?", "options": ["3rd; 61", "5th; 42", "4th; 39", "6th; 30"], "answer": "C", "explanation": "13 gold, 17 silver, 9 bronze = 39. Australia topped the table."},
+  {"id": 40, "level": "Basic", "type": "Current Affairs", "topic": "Multi-Sport Events: CWG, Asian Games, Olympics & Khelo India", "question": "Which sport gave India its highest number of gold medals (seven) at CWG 2026?", "options": ["Weightlifting", "Boxing", "Judo", "Athletics"], "answer": "B", "explanation": "Boxing: 7 gold + 3 silver."},
+  {"id": 41, "level": "Basic", "type": "Current Affairs", "topic": "Multi-Sport Events: CWG, Asian Games, Olympics & Khelo India", "question": "Mirabai Chanu became the first Indian to win three consecutive CWG gold medals in:", "options": ["Weightlifting", "Wrestling", "Shooting", "Boxing"], "answer": "A", "explanation": "Women's 48 kg weightlifting - 2018, 2022 and 2026."},
+  {"id": 42, "level": "Basic", "type": "Current Affairs", "topic": "Multi-Sport Events: CWG, Asian Games, Olympics & Khelo India", "question": "Who won India's first-ever Commonwealth Games gold medals in judo at Glasgow 2026?", "options": ["Sushila Devi & Vijay Kumar", "Asmita Dey & Harsh Singh", "Tulika Maan & Jaspal Singh", "Sarita Devi & Suraj Singh"], "answer": "B", "explanation": "Asmita Dey (women's -48 kg) and Harsh Singh (men's -60 kg)."},
+  {"id": 43, "level": "Intermediate", "type": "Current Affairs", "topic": "Multi-Sport Events: CWG, Asian Games, Olympics & Khelo India", "question": "Which Indian city will host the centenary Commonwealth Games in 2030?", "options": ["Delhi", "Mumbai", "Ahmedabad", "Hyderabad"], "answer": "C", "explanation": "Ahmedabad - confirmed on 26 November 2025; India's previous CWG was Delhi 2010."},
+  {"id": 44, "level": "Intermediate", "type": "Current Affairs", "topic": "Multi-Sport Events: CWG, Asian Games, Olympics & Khelo India", "question": "The 20th Asian Games (2026) were held in:", "options": ["Hangzhou, China", "Aichi-Nagoya, Japan", "Jakarta, Indonesia", "Doha, Qatar"], "answer": "B", "explanation": "Aichi-Nagoya, Japan, 19 Sep-4 Oct 2026."},
+  {"id": 45, "level": "Basic", "type": "Current Affairs", "topic": "Multi-Sport Events: CWG, Asian Games, Olympics & Khelo India", "question": "India's final medal tally at the Asian Games 2026 was:", "options": ["106 medals, 3rd", "85 medals, 4th", "70 medals, 5th", "100 medals, 4th"], "answer": "B", "explanation": "21 gold, 27 silver, 37 bronze = 85. Hangzhou 2022 was the record (106)."},
+  {"id": 46, "level": "Basic", "type": "Current Affairs", "topic": "Multi-Sport Events: CWG, Asian Games, Olympics & Khelo India", "question": "Which country topped the Asian Games 2026 medal table for the 12th consecutive edition?", "options": ["Japan", "South Korea", "China", "India"], "answer": "C", "explanation": "China - 169 gold, 341 total. Japan 2nd, South Korea 3rd."},
+  {"id": 47, "level": "Basic", "type": "Current Affairs", "topic": "Multi-Sport Events: CWG, Asian Games, Olympics & Khelo India", "question": "Which combat sport made its Asian Games debut in 2026, with India's Suchika Tariyal winning bronze?", "options": ["Kurash", "Mixed Martial Arts (MMA)", "Sambo", "Muay Thai"], "answer": "B", "explanation": "Suchika Tariyal won India's first Asian Games MMA medal."},
+  {"id": 48, "level": "Basic", "type": "Current Affairs", "topic": "Multi-Sport Events: CWG, Asian Games, Olympics & Khelo India", "question": "India won gold in men's cricket at the Asian Games 2026 by defeating:", "options": ["Sri Lanka", "Bangladesh", "Pakistan", "Afghanistan"], "answer": "C", "explanation": "India beat Pakistan by 19 runs. The women's team beat Sri Lanka by 147 runs."},
+  {"id": 49, "level": "Basic", "type": "Current Affairs", "topic": "Multi-Sport Events: CWG, Asian Games, Olympics & Khelo India", "question": "The Asian Games 2030 and 2034 will be hosted by ______ and ______ respectively.", "options": ["Doha; Riyadh", "Riyadh; Doha", "Tokyo; Seoul", "Ahmedabad; Doha"], "answer": "A", "explanation": "Both awarded together by OCA in 2020. India has bid for 2038."},
+  {"id": 50, "level": "Basic", "type": "Current Affairs", "topic": "Multi-Sport Events: CWG, Asian Games, Olympics & Khelo India", "question": "The Winter Olympics 2026 were held at:", "options": ["Beijing", "Milano Cortina", "Sapporo", "Salt Lake City"], "answer": "B", "explanation": "Milano Cortina (Italy), Feb 2026. Norway topped the medal table (18 G)."},
+  {"id": 51, "level": "Basic", "type": "Current Affairs", "topic": "Multi-Sport Events: CWG, Asian Games, Olympics & Khelo India", "question": "India has expressed interest in hosting which edition of the Summer Olympics?", "options": ["2028", "2032", "2036", "2040"], "answer": "C", "explanation": "Ahmedabad is India's proposed host city for 2036. LA hosts 2028; Brisbane 2032."},
+  {"id": 52, "level": "Intermediate", "type": "Current Affairs", "topic": "Multi-Sport Events: CWG, Asian Games, Olympics & Khelo India", "question": "The 7th Khelo India Youth Games (2025) were held in which state for the first time?", "options": ["Madhya Pradesh", "Bihar", "Odisha", "Tamil Nadu"], "answer": "B", "explanation": "Bihar (4-15 May 2025). Maharashtra topped the medal tally."},
+  {"id": 53, "level": "Basic", "type": "Current Affairs", "topic": "Multi-Sport Events: CWG, Asian Games, Olympics & Khelo India", "question": "Which state topped the medal tally at Khelo India Youth Games 2025?", "options": ["Haryana", "Rajasthan", "Maharashtra", "Bihar"], "answer": "C", "explanation": "Maharashtra (5th time). Haryana was 2nd, Rajasthan 3rd."},
+  {"id": 54, "level": "Basic", "type": "Current Affairs", "topic": "Multi-Sport Events: CWG, Asian Games, Olympics & Khelo India", "question": "The 38th National Games (2025) were hosted by:", "options": ["Goa", "Gujarat", "Uttarakhand", "Meghalaya"], "answer": "C", "explanation": "Uttarakhand, 28 Jan-14 Feb 2025."},
+  {"id": 55, "level": "Intermediate", "type": "Current Affairs", "topic": "Hockey", "question": "The Men's Hockey Asia Cup 2025 was held at which venue in India?", "options": ["Bhubaneswar", "Rajgir, Bihar", "Ranchi", "Chennai"], "answer": "B", "explanation": "Bihar Sports University Hockey Stadium, Rajgir. India beat South Korea 4-1."},
+  {"id": 56, "level": "Basic", "type": "Current Affairs", "topic": "Hockey", "question": "By winning the Asia Cup 2025, India qualified for the:", "options": ["Olympics 2028", "FIH Hockey World Cup 2026", "Champions Trophy 2026", "Asian Games 2030"], "answer": "B", "explanation": "The Asia Cup winner earned direct entry to the 2026 World Cup."},
+  {"id": 57, "level": "Intermediate", "type": "Current Affairs", "topic": "Hockey", "question": "The FIH Hockey World Cup 2026 was jointly hosted by:", "options": ["Germany & Spain", "Belgium & Netherlands", "India & Malaysia", "Australia & New Zealand"], "answer": "B", "explanation": "Wavre (Belgium) and Amstelveen (Netherlands), 15-30 August 2026."},
+  {"id": 58, "level": "Basic", "type": "Current Affairs", "topic": "Hockey", "question": "Which team won the men's Hockey World Cup 2026?", "options": ["Netherlands", "Belgium", "Germany", "Argentina"], "answer": "C", "explanation": "Germany retained the title, beating Spain in the final."},
+  {"id": 59, "level": "Basic", "type": "Current Affairs", "topic": "Hockey", "question": "Who won the women's Hockey World Cup 2026, defeating the Netherlands in a shootout?", "options": ["Australia", "Argentina", "England", "China"], "answer": "B", "explanation": "Argentina won 3-1 in the shootout after a 1-1 draw."},
+  {"id": 60, "level": "Basic", "type": "Current Affairs", "topic": "Hockey", "question": "When did India's men's hockey team win its only Hockey World Cup title?", "options": ["1971", "1975", "1980", "1998"], "answer": "B", "explanation": "1975 in Kuala Lumpur (beat Pakistan 2-1)."},
+  {"id": 61, "level": "Intermediate", "type": "Current Affairs", "topic": "Tennis & Grand Slams", "question": "Who won the Australian Open 2026 men's singles, completing a career Grand Slam?", "options": ["Jannik Sinner", "Novak Djokovic", "Carlos Alcaraz", "Alexander Zverev"], "answer": "C", "explanation": "Alcaraz beat Djokovic in the final - the youngest man to complete the career Grand Slam."},
+  {"id": 62, "level": "Basic", "type": "Current Affairs", "topic": "Tennis & Grand Slams", "question": "Who won the women's singles title at the Australian Open 2026?", "options": ["Aryna Sabalenka", "Elena Rybakina", "Iga Swiatek", "Coco Gauff"], "answer": "B", "explanation": "Rybakina (Kazakhstan) beat world No. 1 Sabalenka."},
+  {"id": 63, "level": "Intermediate", "type": "Current Affairs", "topic": "Tennis & Grand Slams", "question": "Who won his maiden Grand Slam at the French Open 2026?", "options": ["Casper Ruud", "Alexander Zverev", "Carlos Alcaraz", "Jannik Sinner"], "answer": "B", "explanation": "Zverev won his first major in Paris; he later added the US Open."},
+  {"id": 64, "level": "Basic", "type": "Current Affairs", "topic": "Tennis & Grand Slams", "question": "Who won the Wimbledon 2026 men's singles title?", "options": ["Carlos Alcaraz", "Alexander Zverev", "Novak Djokovic", "Jannik Sinner"], "answer": "D", "explanation": "Sinner beat Zverev in four sets - his second consecutive Wimbledon."},
+  {"id": 65, "level": "Basic", "type": "Current Affairs", "topic": "Tennis & Grand Slams", "question": "The Wimbledon 2026 women's singles final was an all-______ final between Linda Noskova and Karolina Muchova.", "options": ["Polish", "Czech", "Russian", "American"], "answer": "B", "explanation": "Both Czech; Noskova won her first Grand Slam."},
+  {"id": 66, "level": "Intermediate", "type": "Current Affairs", "topic": "Tennis & Grand Slams", "question": "Who won the US Open 2026 men's singles title, defeating Ben Shelton?", "options": ["Carlos Alcaraz", "Jannik Sinner", "Alexander Zverev", "Taylor Fritz"], "answer": "C", "explanation": "Zverev - his second major of 2026."},
+  {"id": 67, "level": "Basic", "type": "Current Affairs", "topic": "Tennis & Grand Slams", "question": "On which surface is the French Open played?", "options": ["Grass", "Hard court", "Clay", "Carpet"], "answer": "C", "explanation": "Red clay at Stade Roland Garros, Paris. (AO & US Open: hard; Wimbledon: grass.)"},
+  {"id": 68, "level": "Basic", "type": "Current Affairs", "topic": "Tennis & Grand Slams", "question": "Which Grand Slam is played at Flushing Meadows, New York?", "options": ["Australian Open", "US Open", "Wimbledon", "French Open"], "answer": "B", "explanation": "USTA Billie Jean King National Tennis Center."},
+  {"id": 69, "level": "Intermediate", "type": "Current Affairs", "topic": "Chess", "question": "Who is the challenger to D Gukesh in the FIDE World Chess Championship Match 2026?", "options": ["Fabiano Caruana", "Javokhir Sindarov", "Hikaru Nakamura", "Anish Giri"], "answer": "B", "explanation": "Sindarov (Uzbekistan) won the 2026 Candidates in Paphos, Cyprus."},
+  {"id": 70, "level": "Intermediate", "type": "Current Affairs", "topic": "Chess", "question": "The 2026 World Chess Championship match between Gukesh and Sindarov is scheduled to be held in:", "options": ["Singapore", "Chennai", "Geneva", "Dubai"], "answer": "C", "explanation": "Geneva, Switzerland - 14 classical games, Nov-Dec 2026."},
+  {"id": 71, "level": "Basic", "type": "Current Affairs", "topic": "Chess", "question": "Where was the FIDE Candidates Tournament 2026 held?", "options": ["Toronto", "Paphos, Cyprus", "Chennai", "Berlin"], "answer": "B", "explanation": "Paphos (Pegeia), Cyprus - an 8-player double round-robin."},
+  {"id": 72, "level": "Basic", "type": "Current Affairs", "topic": "Chess", "question": "Javokhir Sindarov, who won the FIDE World Cup 2025 in Goa, represents which country?", "options": ["Kazakhstan", "Uzbekistan", "Azerbaijan", "Russia"], "answer": "B", "explanation": "Uzbekistan - he would become the first Uzbek world champion."},
+  {"id": 73, "level": "Basic", "type": "Current Affairs", "topic": "Chess", "question": "D Gukesh became the youngest World Chess Champion by defeating ______ in Singapore in December 2024.", "options": ["Magnus Carlsen", "Ding Liren", "Ian Nepomniachtchi", "Fabiano Caruana"], "answer": "B", "explanation": "Ding Liren (China). Gukesh was 18."},
+  {"id": 74, "level": "Intermediate", "type": "Current Affairs", "topic": "Chess", "question": "Who won the FIDE Women's World Cup 2025 at Batumi, Georgia, defeating Koneru Humpy in the final?", "options": ["R Vaishali", "Divya Deshmukh", "Harika Dronavalli", "Tan Zhongyi"], "answer": "B", "explanation": "19-year-old Divya Deshmukh - also became India's 4th woman Grandmaster."},
+  {"id": 75, "level": "Basic", "type": "Current Affairs", "topic": "Chess", "question": "The World Chess Championship classical match 2026 consists of how many games?", "options": ["12", "14", "16", "10"], "answer": "B", "explanation": "14 classical games (as in 2024)."},
+  {"id": 76, "level": "Basic", "type": "Current Affairs", "topic": "Chess", "question": "Who is the reigning Women's World Chess Champion (as of 2026)?", "options": ["Ju Wenjun", "Divya Deshmukh", "Aleksandra Goryachkina", "Humpy Koneru"], "answer": "A", "explanation": "Ju Wenjun (China). The Women's Candidates 2026 decides her challenger."},
+  {"id": 77, "level": "Intermediate", "type": "Current Affairs", "topic": "Athletics, Boxing, Shooting & Other Individual Sports", "question": "Who won the men's javelin throw gold at the World Athletics Championships 2025 in Tokyo?", "options": ["Neeraj Chopra", "Arshad Nadeem", "Keshorn Walcott", "Julian Weber"], "answer": "C", "explanation": "Walcott (88.16 m). Defending champion Neeraj Chopra finished 8th."},
+  {"id": 78, "level": "Basic", "type": "Current Affairs", "topic": "Athletics, Boxing, Shooting & Other Individual Sports", "question": "Which Indian javelin thrower finished 4th at the Tokyo 2025 World Championships with a personal best of 86.27 m?", "options": ["DP Manu", "Kishore Jena", "Sachin Yadav", "Rohit Yadav"], "answer": "C", "explanation": "Sachin Yadav was 4th in a field led by Walcott (88.16 m)."},
+  {"id": 79, "level": "Basic", "type": "Current Affairs", "topic": "Athletics, Boxing, Shooting & Other Individual Sports", "question": "Mondo Duplantis set a new pole vault world record of ______ at the 2025 World Championships.", "options": ["6.25 m", "6.28 m", "6.30 m", "6.35 m"], "answer": "C", "explanation": "6.30 m in Tokyo."},
+  {"id": 80, "level": "Intermediate", "type": "Current Affairs", "topic": "Athletics, Boxing, Shooting & Other Individual Sports", "question": "Who won the Formula 1 World Drivers' Championship in 2025?", "options": ["Max Verstappen", "Lando Norris", "Oscar Piastri", "Lewis Hamilton"], "answer": "B", "explanation": "Norris (McLaren) won by 2 points over Verstappen - decided at Abu Dhabi."},
+  {"id": 81, "level": "Basic", "type": "Current Affairs", "topic": "Athletics, Boxing, Shooting & Other Individual Sports", "question": "Lando Norris won the 2025 F1 title driving for which team?", "options": ["Red Bull", "Ferrari", "Mercedes", "McLaren"], "answer": "D", "explanation": "McLaren's first drivers' champion since Lewis Hamilton in 2008."},
+  {"id": 82, "level": "Basic", "type": "Current Affairs", "topic": "Athletics, Boxing, Shooting & Other Individual Sports", "question": "The Thomas & Uber Cup 2026 finals were held in:", "options": ["Chengdu, China", "Horsens, Denmark", "Bangkok, Thailand", "Aarhus, Sweden"], "answer": "B", "explanation": "Horsens, Denmark (24 Apr-3 May 2026)."},
+  {"id": 83, "level": "Basic", "type": "Current Affairs", "topic": "Athletics, Boxing, Shooting & Other Individual Sports", "question": "India won its first-ever Thomas Cup title in 2022 by defeating which country in the final?", "options": ["China", "Malaysia", "Indonesia", "Denmark"], "answer": "C", "explanation": "3-0 against 14-time champions Indonesia in Bangkok."},
+  {"id": 84, "level": "Basic", "type": "Current Affairs", "topic": "Athletics, Boxing, Shooting & Other Individual Sports", "question": "Nikhat Zareen (asked in OAVS 2024) is an Indian ______.", "options": ["archer", "boxer", "shuttler", "wrestler"], "answer": "B", "explanation": "Boxer - two-time World Champion (women's 50 kg)."},
+  {"id": 85, "level": "Intermediate", "type": "Current Affairs", "topic": "Sports Awards, Governance & Who's Who", "question": "How many sportspersons were selected for the Major Dhyan Chand Khel Ratna Award 2025?", "options": ["One", "Two", "Four", "None"], "answer": "D", "explanation": "None - the first year without a Khel Ratna since 2014. (17 Arjuna Awards were announced.)"},
+  {"id": 86, "level": "Basic", "type": "Current Affairs", "topic": "Sports Awards, Governance & Who's Who", "question": "Which of the following was NOT a recipient of the Major Dhyan Chand Khel Ratna Award 2024?", "options": ["Manu Bhaker", "D Gukesh", "Neeraj Chopra", "Harmanpreet Singh"], "answer": "C", "explanation": "The 2024 awardees were Manu Bhaker, Gukesh, Harmanpreet Singh and Praveen Kumar."},
+  {"id": 87, "level": "Basic", "type": "Current Affairs", "topic": "Sports Awards, Governance & Who's Who", "question": "National Sports Day in India is celebrated on 29 August to mark the birth anniversary of:", "options": ["Milkha Singh", "Major Dhyan Chand", "KD Jadhav", "Sachin Tendulkar"], "answer": "B", "explanation": "Hockey wizard Major Dhyan Chand (born 29 Aug 1905)."},
+  {"id": 88, "level": "Intermediate", "type": "Current Affairs", "topic": "Sports Awards, Governance & Who's Who", "question": "The President gave assent to the National Sports Governance Act on:", "options": ["1 July 2025", "11 August 2025", "18 August 2025", "29 August 2025"], "answer": "C", "explanation": "18 August 2025 (Act No. 25 of 2025)."},
+  {"id": 89, "level": "Basic", "type": "Current Affairs", "topic": "Sports Awards, Governance & Who's Who", "question": "Which of the following is created under the National Sports Governance Act, 2025?", "options": ["National Sports Federation Fund", "National Sports Tribunal", "Indian Sports Council", "National Doping Court"], "answer": "B", "explanation": "The Act creates the National Sports Board, National Sports Tribunal and National Sports Election Panel."},
+  {"id": 90, "level": "Basic", "type": "Current Affairs", "topic": "Sports Awards, Governance & Who's Who", "question": "Khelo Bharat Niti 2025 is the new:", "options": ["National Education Policy", "National Sports Policy", "National Fitness Mission", "Sports Insurance Scheme"], "answer": "B", "explanation": "Approved 1 Jul 2025; it replaces the National Sports Policy 2001."},
+  {"id": 91, "level": "Intermediate", "type": "Current Affairs", "topic": "Sports Awards, Governance & Who's Who", "question": "Who became the first woman and first African President of the International Olympic Committee in 2025?", "options": ["Nawal El Moutawakel", "Kirsty Coventry", "Anita DeFrantz", "Sebastian Coe"], "answer": "B", "explanation": "Kirsty Coventry (Zimbabwe), succeeding Thomas Bach."},
+  {"id": 92, "level": "Basic", "type": "Current Affairs", "topic": "Sports Awards, Governance & Who's Who", "question": "Who was elected the 37th President of the BCCI in September 2025?", "options": ["Roger Binny", "Rajeev Shukla", "Mithun Manhas", "Devajit Saikia"], "answer": "C", "explanation": "Mithun Manhas (former Delhi/J&K cricketer) succeeded Roger Binny."},
+  {"id": 93, "level": "Basic", "type": "Current Affairs", "topic": "Sports Awards, Governance & Who's Who", "question": "Who is the President of the Indian Olympic Association (IOA)?", "options": ["Anil Khanna", "PT Usha", "Narinder Batra", "Abhinav Bindra"], "answer": "B", "explanation": "PT Usha (also President of the Commonwealth Games Association of India)."},
+  {"id": 94, "level": "Basic", "type": "Current Affairs", "topic": "Sports Awards, Governance & Who's Who", "question": "IOA instituted new awards at the Asian Games 2026 named after which two Indian sporting figures?", "options": ["Milkha Singh & PT Usha", "Jaspal Rana & Raja Randhir Singh", "Dhyan Chand & KD Jadhav", "Abhinav Bindra & Karni Singh"], "answer": "B", "explanation": "Jaspal Rana Award (best female) - Kumkum Mohod; Raja Randhir Singh Award (best male) - Sujeet Kalkal."}
+];
+
+/* STATE */
+const S = {
+  filtered:[],idx:0,answers:{},bookmarks:new Set(),
+  dark:false,jumpOpen:false,expVisible:false,
+  startTime:Date.now(),timerInterval:null,
+  phase:'quiz',reviewFilter:'all',
+  showBookmarkOnly:false,viewAll:false
+};
+
+const OPT = ['A','B','C','D'];
+const $ = id => document.getElementById(id);
+
+/* INIT */
+function init(){
+  populateFilters();
+  applyFilters();
+  buildJumpGrid();
+  startTimer();
+  render();
+  updateStats();
+  const d = localStorage.getItem('mcq-dark');
+  toggleDark(d===null?true:d==='1');
+}
+
+function populateFilters(){
+  ['topic','type'].forEach(k=>{
+    const vals=[...new Set(QUESTIONS.map(q=>q[k]))].sort();
+    const el=$('filter-'+k);
+    vals.forEach(v=>{const o=document.createElement('option');o.value=o.textContent=v;el.appendChild(o);});
+  });
+}
+
+function applyFilters(){
+  const lv=$('filter-level').value, tp=$('filter-topic').value, ty=$('filter-type').value;
+  S.filtered=QUESTIONS.filter(q=>
+    (lv==='all'||q.level===lv)&&
+    (tp==='all'||q.topic===tp)&&
+    (ty==='all'||q.type===ty)&&
+    (!S.showBookmarkOnly||S.bookmarks.has(q.id))
+  );
+  S.idx=0;
+  buildJumpGrid();
+  S.viewAll?renderAllQuestions():render();
+  updateStats();
+}
+
+/* RENDER QUESTION */
+function render(){
+  const card=$('question-card'), noRes=document.querySelector('.no-results');
+  if(!S.filtered.length){
+    card.style.display='none';
+    if(!noRes){
+      const d=document.createElement('div');
+      d.className='no-results';
+      d.textContent=QUESTIONS.length===0?'No questions loaded. Add your questions to the QUESTIONS array.':'No questions match your filters.';
+      card.parentNode.insertBefore(d,card.nextSibling);
+    }
+    $('q-counter').textContent='0 / 0';
+    $('prog-label').textContent='No questions';
+    $('progress-fill').style.width='0%';
+    $('prog-pct').textContent='0%';
+    return;
+  }
+  if(noRes)noRes.remove();
+  card.style.display='';
+  const q=S.filtered[S.idx], ans=S.answers[q.id], done=ans&&ans.selected;
+  card.style.animation='none';void card.offsetWidth;card.style.animation='';
+
+  const lvC={Basic:'badge-basic',Intermediate:'badge-intermediate',Advanced:'badge-advanced'}[q.level]||'';
+  $('card-header').innerHTML=`
+    <span class="q-number">Q${q.id}</span>
+    <span class="badge ${lvC}">${q.level}</span>
+    <span class="badge badge-type">${q.type}</span>
+    <span class="badge badge-topic">${q.topic}</span>
+    <button class="bookmark-btn${S.bookmarks.has(q.id)?' active':''}" onclick="toggleBookmark(${q.id})">
+      <svg viewBox="0 0 24 24" fill="${S.bookmarks.has(q.id)?'currentColor':'none'}" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+    </button>`;
+  $('q-text').innerHTML=q.question.replace(/\n/g,'<br>');
+
+  const ol=$('options-list');
+  ol.innerHTML='';
+  q.options.forEach((opt,i)=>{
+    const lbl=OPT[i];
+    let cls='option-btn', icon='';
+    if(done){
+      if(lbl===q.answer){cls+=' correct';icon='<span class="option-icon">✅</span>';}
+      else if(lbl===ans.selected){cls+=' wrong';icon='<span class="option-icon">❌</span>';}
+    }
+    const btn=document.createElement('button');
+    btn.className=cls;btn.disabled=!!done;
+    btn.innerHTML=`<span class="option-label">${lbl}</span><span style="flex:1">${opt}</span>${icon}`;
+    btn.addEventListener('click',()=>selectAnswer(q.id,lbl,q.answer));
+    ol.appendChild(btn);
+  });
+
+  const expBox=$('explanation-box'), expBtn=$('show-exp-btn');
+  expBox.classList.add('hidden');expBtn.classList.add('hidden');
+  S.expVisible=false;
+  setExpBtnText(false);
+  if(done){S.expVisible=true;showExplanation(q);expBtn.classList.remove('hidden');}
+
+  const total=S.filtered.length, cur=S.idx+1;
+  $('q-counter').textContent=`${cur} / ${total}`;
+  $('prog-label').textContent=`Question ${cur} of ${total}`;
+  const pct=Math.round(cur/total*100);
+  $('progress-fill').style.width=pct+'%';
+  $('prog-pct').textContent=pct+'%';
+  $('s-total').textContent=total;
+  document.querySelectorAll('.jump-btn').forEach((b,bi)=>b.classList.toggle('current',bi===S.idx));
+}
+
+function setExpBtnText(visible){
+  const ico='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>';
+  $('show-exp-btn').innerHTML=ico+(visible?' Hide Explanation':' Show Explanation');
+}
+
+function selectAnswer(qid,selected,correct){
+  if(S.answers[qid]?.selected)return;
+  const ok=selected===correct;
+  S.answers[qid]={selected,correct:ok};
+  const jb=document.querySelector(`.jump-btn[data-qi="${qid}"]`);
+  if(jb){jb.classList.remove('answered-c','answered-w');jb.classList.add(ok?'answered-c':'answered-w');}
+  updateStats();
+  if(ok){
+    // Correct: briefly flash green then auto-advance
+    render();
+    setTimeout(()=>S.idx<S.filtered.length-1?goTo(S.idx+1):finishQuiz(),700);
+  }else{
+    // Wrong: stay on question and show explanation
+    S.expVisible=true;render();
+  }
+}
+
+function showExplanation(q){
+  $('explanation-box').className='explanation-box';
+  $('explanation-box').innerHTML=`
+    <div class="exp-header"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> Explanation</div>
+    <div class="exp-body"><div class="exp-answer">Correct Answer: ${q.answer}</div>${q.explanation}</div>`;
+  setExpBtnText(true);
+}
+function hideExplanation(){
+  $('explanation-box').className='explanation-box hidden';
+  setExpBtnText(false);
+}
+
+function goTo(idx){
+  if(idx<0||idx>=S.filtered.length)return;
+  S.idx=idx;S.expVisible=false;render();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function buildJumpGrid(){
+  const grid=$('jump-grid');grid.innerHTML='';
+  S.filtered.forEach((q,i)=>{
+    const btn=document.createElement('button');
+    btn.className='jump-btn';btn.dataset.qi=q.id;btn.textContent=q.id;
+    if(i===S.idx)btn.classList.add('current');
+    const a=S.answers[q.id];
+    if(a?.selected)btn.classList.add(a.correct?'answered-c':'answered-w');
+    if(S.bookmarks.has(q.id))btn.classList.add('bookmarked');
+    btn.addEventListener('click',()=>{goTo(i);S.jumpOpen=false;$('jump-bar').classList.remove('open');});
+    grid.appendChild(btn);
+  });
+}
+
+function toggleBookmark(qid){
+  S.bookmarks.has(qid)?S.bookmarks.delete(qid):S.bookmarks.add(qid);
+  render();buildJumpGrid();
+}
+
+function updateStats(){
+  const ans=Object.values(S.answers).filter(a=>a?.selected);
+  const ok=ans.filter(a=>a.correct).length;
+  $('s-attempted').textContent=ans.length;
+  $('s-correct').textContent=ok;
+  $('s-wrong').textContent=ans.length-ok;
+  $('s-acc').textContent=ans.length?Math.round(ok/ans.length*100)+'%':'—';
+}
+
+function finishQuiz(){
+  stopTimer();
+  const total=S.filtered.length;
+  const ans=Object.values(S.answers).filter(a=>a?.selected);
+  const ok=ans.filter(a=>a.correct).length;
+  const pct=ans.length?Math.round(ok/total*100):0;
+  const tier=pct>=90?4:pct>=75?3:pct>=60?2:pct>=40?1:0;
+  const emojis=['😔','😐','🙂','😊','🎉'],msgs=['Needs Improvement','Keep Practicing!','Good Work!','Very Good!','Excellent!'];
+  $('res-emoji').textContent=emojis[tier];$('res-title').textContent=msgs[tier];
+  $('res-msg').textContent=`You scored ${ok} out of ${total}`;
+  $('res-score').textContent=`${ok}/${total}`;$('res-correct').textContent=ok;
+  $('res-wrong').textContent=ans.length-ok;$('res-skipped').textContent=total-ans.length;
+  $('res-pct').textContent=pct+'%';$('res-time').textContent=$('timer-display').textContent;
+  showScreen('result-screen');
+}
+
+function renderReview(){
+  const list=$('review-list');list.innerHTML='';
+  const rf=S.reviewFilter;
+  S.filtered.forEach(q=>{
+    const a=S.answers[q.id],sel=a?.selected,ok=a?.correct,skip=!sel,bm=S.bookmarks.has(q.id);
+    if(rf==='correct'&&(!a||!ok))return;
+    if(rf==='wrong'&&(!a||ok||skip))return;
+    if(rf==='skipped'&&!skip)return;
+    if(rf==='bookmarked'&&!bm)return;
+    const lvC={Basic:'badge-basic',Intermediate:'badge-intermediate',Advanced:'badge-advanced'}[q.level]||'';
+    const card=document.createElement('div');card.className='review-card';
+    const optsH=q.options.map((opt,i)=>{
+      const l=OPT[i];let c='review-opt';
+      if(l===q.answer)c+=' correct-ans';
+      else if(l===sel&&sel!==q.answer)c+=' user-wrong';
+      return`<div class="${c}"><b>${l}.</b> ${opt}</div>`;
+    }).join('');
+    card.innerHTML=`
+      <div class="review-header">
+        <span class="q-number">Q${q.id}</span><span class="badge ${lvC}">${q.level}</span>
+        <span class="badge badge-type">${q.type}</span><span class="badge badge-topic">${q.topic}</span>
+        <span class="review-status">${skip?'—':ok?'✅':'❌'}</span>
+      </div>
+      <div class="review-body">
+        <div class="review-q">${q.question.replace(/\n/g,'<br>')}</div>
+        <div class="review-opts">${optsH}</div>
+        <div style="font-size:12px;color:var(--text3);margin-bottom:6px">${sel?`Your answer: <b>${sel}</b> | Correct: <b>${q.answer}</b>`:`Not attempted — Correct: <b>${q.answer}</b>`}</div>
+        <div class="review-exp">${q.explanation}</div>
+      </div>`;
+    list.appendChild(card);
+  });
+  if(!list.hasChildNodes())list.innerHTML='<div class="no-results">No questions in this category.</div>';
+}
+
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  $(id).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function startTimer(){
+  S.startTime=Date.now();
+  S.timerInterval=setInterval(()=>{
+    const e=Math.floor((Date.now()-S.startTime)/1000);
+    const el=$('timer-display');
+    el.textContent=String(Math.floor(e/60)).padStart(2,'0')+':'+String(e%60).padStart(2,'0');
+    el.classList.toggle('warn',e>3600);
+  },1000);
+}
+function stopTimer(){clearInterval(S.timerInterval);}
+
+function toggleDark(force){
+  S.dark=force!==undefined?force:!S.dark;
+  document.body.toggleAttribute('data-dark',S.dark);
+  localStorage.setItem('mcq-dark',S.dark?'1':'0');
+  const p=document.querySelector('#dark-toggle svg path');
+  p.setAttribute('d',S.dark?'M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 7a5 5 0 1 1 0 10A5 5 0 0 1 12 7z':'M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z');
+}
+
+function restartQuiz(){
+  S.answers={};S.idx=0;S.expVisible=false;S.viewAll=false;
+  $('quiz-body').style.display='';$('all-panel').style.display='none';
+  resetViewAllBtn();
+  stopTimer();startTimer();applyFilters();buildJumpGrid();showScreen('quiz-screen');updateStats();
+}
+
+function resetViewAllBtn(){
+  const btn=$('view-all-btn');
+  btn.style.cssText='';
+  btn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg> View All';
+}
+
+/* ALL QUESTIONS VIEW */
+function renderAllQuestions(){
+  const list=$('all-list');list.innerHTML='';
+  const qs=S.filtered;
+  const hdr=document.createElement('div');
+  hdr.style.cssText='display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:8px;padding-bottom:14px;border-bottom:1px solid var(--border)';
+  hdr.innerHTML=`<div style="font-family:var(--fd);font-size:18px;color:var(--text)">All Questions <span style="background:var(--acl);color:var(--ac);border-radius:99px;font-size:12px;font-weight:700;padding:3px 12px">${qs.length} Question${qs.length!==1?'s':''}</span></div>`;
+  list.appendChild(hdr);
+  if(!qs.length){const e=document.createElement('div');e.className='all-no-results';e.textContent='No questions match the current filters.';list.appendChild(e);return;}
+  qs.forEach(q=>list.appendChild(buildAllCard(q)));
+}
+
+function buildAllCard(q){
+  const ans=S.answers[q.id],done=ans?.selected;
+  const lvC={Basic:'badge-basic',Intermediate:'badge-intermediate',Advanced:'badge-advanced'}[q.level]||'';
+  const bm=S.bookmarks.has(q.id);
+
+  const card=document.createElement('div');
+  card.className='all-q-card';card.id='allcard-'+q.id;
+
+  const hdr=document.createElement('div');hdr.className='all-q-header';
+  hdr.innerHTML=`<span class="q-number">Q${q.id}</span><span class="badge ${lvC}">${q.level}</span><span class="badge badge-type">${q.type}</span><span class="badge badge-topic">${q.topic}</span>
+    <button class="bookmark-btn${bm?' active':''}" data-qid="${q.id}" style="margin-left:auto">
+      <svg viewBox="0 0 24 24" fill="${bm?'currentColor':'none'}" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+    </button>`;
+  hdr.querySelector('.bookmark-btn').addEventListener('click',function(){
+    const qid=parseInt(this.dataset.qid);
+    S.bookmarks.has(qid)?S.bookmarks.delete(qid):S.bookmarks.add(qid);
+    if(S.showBookmarkOnly){renderAllQuestions();return;}
+    const a=S.bookmarks.has(qid);
+    this.classList.toggle('active',a);
+    this.querySelector('svg').setAttribute('fill',a?'currentColor':'none');
+  });
+
+  const body=document.createElement('div');body.className='all-q-body';
+  const qt=document.createElement('div');qt.className='all-q-text';qt.innerHTML=q.question.replace(/\n/g,'<br>');
+  body.appendChild(qt);
+
+  const ol=document.createElement('div');ol.className='all-opts';
+  OPT.forEach((lbl,i)=>{
+    const btn=document.createElement('button');btn.className='all-opt';
+    let icon='';
+    if(done){
+      btn.disabled=true;
+      if(lbl===q.answer){btn.classList.add('ao-correct');icon='<span style="margin-left:auto">✅</span>';}
+      else if(lbl===ans.selected){btn.classList.add('ao-wrong');icon='<span style="margin-left:auto">❌</span>';}
+    }
+    btn.innerHTML=`<span class="all-opt-lbl">${lbl}</span><span style="flex:1">${q.options[i]}</span>${icon}`;
+    if(!done){
+      btn.addEventListener('click',()=>{
+        const ok=lbl===q.answer;
+        S.answers[q.id]={selected:lbl,correct:ok};
+        updateStats();
+        const jb=document.querySelector(`.jump-btn[data-qi="${q.id}"]`);
+        if(jb){jb.classList.remove('answered-c','answered-w');jb.classList.add(ok?'answered-c':'answered-w');}
+        card.replaceWith(buildAllCard(q));
+      });
+    }
+    ol.appendChild(btn);
+  });
+  body.appendChild(ol);
+
+  const exp=document.createElement('div');
+  exp.className='all-exp'+(done?' visible':'');
+  exp.innerHTML=`<div class="all-exp-ans">✓ Correct Answer: ${q.answer}</div>${q.explanation}`;
+  body.appendChild(exp);
+
+  card.appendChild(hdr);card.appendChild(body);
+  return card;
+}
+
+function toggleViewAll(){
+  const btn=$('view-all-btn');
+  if(S.viewAll){
+    $('quiz-body').style.display='none';$('all-panel').style.display='block';
+    btn.style.cssText='background:var(--amber);border-color:var(--amber);color:#fff';
+    btn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:15px;height:15px"><polyline points="15 18 9 12 15 6"/></svg> Quiz Mode';
+    renderAllQuestions();
+    // Scroll to the card matching the current quiz question
+    const currentQ=S.filtered[S.idx];
+    if(currentQ){
+      setTimeout(()=>{
+        const card=document.getElementById('allcard-'+currentQ.id);
+        if(card){
+          const navH=$('top-bar').offsetHeight;
+          const top=card.getBoundingClientRect().top+window.scrollY-navH-12;
+          window.scrollTo({top,behavior:'smooth'});
+        }
+      },150);
+    }
+  }else{
+    $('quiz-body').style.display='';$('all-panel').style.display='none';
+    resetViewAllBtn();render();
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+}
+
+/* EVENT LISTENERS */
+$('prev-btn').addEventListener('click',()=>goTo(S.idx-1));
+$('next-btn').addEventListener('click',()=>S.idx<S.filtered.length-1?goTo(S.idx+1):finishQuiz());
+$('jump-toggle').addEventListener('click',()=>{S.jumpOpen=!S.jumpOpen;$('jump-bar').classList.toggle('open',S.jumpOpen);});
+$('dark-toggle').addEventListener('click',()=>toggleDark());
+$('finish-btn').addEventListener('click',finishQuiz);
+$('restart-btn').addEventListener('click',restartQuiz);
+$('restart-btn2').addEventListener('click',restartQuiz);
+$('review-btn').addEventListener('click',()=>{
+  S.reviewFilter='all';
+  document.querySelectorAll('.rfbtn').forEach(b=>b.classList.toggle('active',b.dataset.rf==='all'));
+  renderReview();showScreen('review-screen');
+});
+$('back-to-result').addEventListener('click',()=>showScreen('result-screen'));
+$('show-exp-btn').addEventListener('click',()=>{
+  const q=S.filtered[S.idx];if(!q)return;
+  S.expVisible=!S.expVisible;
+  S.expVisible?showExplanation(q):hideExplanation();
+});
+$('bookmark-filter-btn').addEventListener('click',function(){
+  S.showBookmarkOnly=!S.showBookmarkOnly;
+  this.style.cssText=S.showBookmarkOnly?'background:var(--amber);color:#fff;border-color:var(--amber)':'';
+  applyFilters();
+});
+$('view-all-btn').addEventListener('click',()=>{S.viewAll=!S.viewAll;toggleViewAll();});
+
+['filter-level','filter-topic','filter-type'].forEach(id=>$(id).addEventListener('change',applyFilters));
+
+document.querySelectorAll('.rfbtn').forEach(btn=>btn.addEventListener('click',()=>{
+  document.querySelectorAll('.rfbtn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');S.reviewFilter=btn.dataset.rf;renderReview();
+}));
+
+document.addEventListener('keydown',e=>{
+  if(['INPUT','SELECT','TEXTAREA'].includes(e.target.tagName))return;
+  const q=S.filtered[S.idx];if(!q)return;
+  if(e.key==='ArrowLeft'){goTo(S.idx-1);return;}
+  if(e.key==='ArrowRight'){goTo(S.idx+1);return;}
+  if(e.key==='e'||e.key==='E'){
+    if(S.answers[q.id]?.selected){S.expVisible=!S.expVisible;S.expVisible?showExplanation(q):hideExplanation();}
+    return;
+  }
+  const lbl={a:'A',b:'B',c:'C',d:'D'}[e.key.toLowerCase()];
+  if(lbl&&!S.answers[q.id]?.selected)selectAnswer(q.id,lbl,q.answer);
+});
+
+/* ── Prevent accidental refresh / navigation ── */
+function hasProgress(){
+  return Object.keys(S.answers).length > 0;
+}
+
+// Browser close / tab close / address bar navigation
+window.addEventListener('beforeunload', function(e){
+  if(hasProgress()){
+    e.preventDefault();
+    e.returnValue = 'You have quiz progress that will be lost. Leave anyway?';
+    return e.returnValue;
+  }
+});
+
+// F5 / Ctrl+R / Cmd+R key intercept
+document.addEventListener('keydown', function(e){
+  if(!hasProgress()) return;
+  const isRefresh = e.key === 'F5' ||
+    ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'r');
+  if(isRefresh){
+    e.preventDefault();
+    showRefreshWarn();
+  }
+}, true);  // capture phase so it fires before other handlers
+
+function showRefreshWarn(){
+  let el = document.getElementById('refresh-warn');
+  if(!el){
+    el = document.createElement('div');
+    el.id = 'refresh-warn';
+    el.textContent = '⚠ Refresh blocked – quiz in progress!';
+    document.body.appendChild(el);
+  }
+  el.classList.add('show');
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.classList.remove('show'), 2800);
+}
+
+
+init();
+
+
+
+</script>
+</body>
+</html>
