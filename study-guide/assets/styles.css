@@ -679,7 +679,52 @@ a.card { display: block; }
   * { transition: none !important; animation: none !important; }
 }
 
-@media (max-width: 720px), (max-height: 500px)  {
+
+
+
+
+
+/* Phone, full screen only: hide extra tools, float the exit button */
+@media (max-width: 720px), (max-height: 500px) {
+  #viewer.is-fullscreen #fit-screen-btn,
+  #viewer.is-fullscreen #zoom-toggle,
+  #viewer.is-fullscreen #zoom-controls,
+  #viewer.is-fullscreen #pdf-tools,
+  #viewer.is-expanded #fit-screen-btn,
+  #viewer.is-expanded #zoom-toggle,
+  #viewer.is-expanded #zoom-controls,
+  #viewer.is-expanded #pdf-tools {
+    display: none !important;
+  }
+
+  #viewer.is-fullscreen,
+  #viewer.is-expanded {
+    padding: 0 !important;
+  }
+  #viewer.is-fullscreen .viewer-tools,
+  #viewer.is-expanded .viewer-tools {
+    height: 0;
+    margin: 0;
+    padding: 0;
+    overflow: visible;
+  }
+
+  #viewer.is-fullscreen .viewer-tools > :first-child,
+  #viewer.is-expanded .viewer-tools > :first-child {
+    position: fixed !important;
+    top: 8px;
+    right: 8px;
+    z-index: 100;
+    background: rgba(0, 0, 0, 0.3) !important;
+    border-color: rgba(255, 255, 255, 0.15) !important;
+    color: rgba(255, 255, 255, 0.85) !important;
+    box-shadow: none !important;
+  }
+}
+
+
+/* Phone: small toolbar buttons */
+@media (max-width: 720px), (max-height: 500px) {
   #viewer .btn {
     padding: 3px 7px !important;
     font-size: 11px !important;
