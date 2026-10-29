@@ -6,12 +6,12 @@
 window.REGISTRY = {
   title: "OAVS TGT Computer Study Guide",
 
-  root: "../",
+  root: "./",
 
   documents: [
     {
       name: "OAVS TGT Syllabus (Parts 1, 2 and 3)",
-      file: "syllabus for part 1,2 and 3.pdf",
+      file: "syllabus.pdf",
       note: "Syllabus for OAVS TGT examination — Parts 1, 2 and 3",
       action: "View syllabus",
       color: "#facc15"

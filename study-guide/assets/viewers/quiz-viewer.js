@@ -1,6 +1,7 @@
 /*
  * Quiz viewer: shows the HTML quizzes (.html / .htm) in a frame.
  * Zoom scales the page; Fit to screen goes full screen and enlarges it (100% to 150%).
+ * Two-finger pinch zoom works on touch devices.
  */
 (function () {
   'use strict';
@@ -56,6 +57,45 @@
       $('#zoom-in').addEventListener('click', () => applyZoom(zoom + STEP));
       $('#zoom-out').addEventListener('click', () => applyZoom(zoom - STEP));
       $('#zoom-reset').addEventListener('click', () => applyZoom(100));
+
+      // Two-finger pinch zoom (mobile). Listeners go inside the iframe,
+      // because that is where the touches happen.
+      function enablePinch(doc) {
+        if (!doc || doc.__pinchReady) return;
+        doc.__pinchReady = true;
+
+        // Stop the browser's own page zoom; one-finger scrolling still works
+        doc.documentElement.style.touchAction = 'pan-x pan-y';
+
+        // screenX/Y are not affected by the zoom transform, so the pinch stays stable
+        const dist = t => Math.hypot(t[0].screenX - t[1].screenX, t[0].screenY - t[1].screenY);
+        let startDist = 0, startZoom = 100;
+
+        doc.addEventListener('touchstart', e => {
+          if (e.touches.length === 2) {
+            startDist = dist(e.touches);
+            startZoom = zoom;
+          }
+        }, { passive: true });
+
+        doc.addEventListener('touchmove', e => {
+          if (e.touches.length !== 2 || !startDist) return;
+          e.preventDefault();
+          applyZoom(Math.round(startZoom * (dist(e.touches) / startDist)));
+        }, { passive: false });
+
+        doc.addEventListener('touchend', e => {
+          if (e.touches.length < 2) startDist = 0;
+        }, { passive: true });
+      }
+
+      function hookFrame() {
+        try { enablePinch(frame.contentDocument); }
+        catch (err) { console.warn('Pinch zoom unavailable:', err); }
+      }
+
+      frame.addEventListener('load', hookFrame); // runs again if the quiz reloads
+      hookFrame();                               // in case it already loaded
     },
   });
 })();
