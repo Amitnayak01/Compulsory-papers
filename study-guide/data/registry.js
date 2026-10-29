@@ -32,7 +32,7 @@ window.REGISTRY = {
 
           files: [
             ["OAVS_Awards_MCQ.html", "quiz"],
-            ["OAVS_Sports_Awards_MCQ.html", "quiz"],
+            ["Awards MCQ.pdf", "bank"],
             ["OAVS_TGT_Current_Affairs_Awards.pdf", "notes"]
           ]
         },
@@ -43,8 +43,8 @@ window.REGISTRY = {
 
           files: [
             ["OAVS_Finance_Banking_MCQ.html", "quiz"],
-            ["OAVS_TGT_Current_Affairs_Finance_Banking.pdf", "notes"],
-            ["OAVS_TGT_Current_Affairs_Part4_Finance_Banking.pdf", "notes"]
+            ["Finance_Banking MCQ.pdf", "bank"],
+            ["OAVS_TGT_Current_Affairs_Finance_Banking.pdf", "notes"]
           ]
         },
 
@@ -65,7 +65,7 @@ window.REGISTRY = {
 
           files: [
             ["OAVS_Politics_MCQ.html", "quiz"],
-            ["OAVS_TGT_Current_Affairs_Part3_Politics.pdf", "notes"],
+            ["Politics MCQ.pdf", "bank"],
             ["OAVS_TGT_Current_Affairs_Politics.pdf", "notes"]
           ]
         },
@@ -89,7 +89,7 @@ window.REGISTRY = {
 
           files: [
             ["OAVS_Schemes_Misc_MCQ.html", "quiz"],
-            ["OAVS_TGT_Current_Affairs_Part7_Schemes_Misc.pdf", "notes"],
+            ["Schemes_Misc MCQ.pdf", "bank"],
             ["OAVS_TGT_Current_Affairs_Schemes_Misc.pdf", "notes"]
           ]
         },
@@ -111,7 +111,7 @@ window.REGISTRY = {
 
           files: [
             ["OAVS_Sports_Quiz.html", "quiz"],
-            ["OAVS_Sports_MCQ.pdf", "bank"],
+            ["OAVS_Sports MCQ.pdf", "bank"],
             ["OAVS_TGT_Current_Affairs_Part1_Sports.pdf", "notes"]
           ]
         }

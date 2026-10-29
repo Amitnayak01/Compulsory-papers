@@ -690,10 +690,12 @@ a.card { display: block; }
   #viewer.is-fullscreen #zoom-toggle,
   #viewer.is-fullscreen #zoom-controls,
   #viewer.is-fullscreen #pdf-tools,
+  #viewer.is-fullscreen #download-btn,
   #viewer.is-expanded #fit-screen-btn,
   #viewer.is-expanded #zoom-toggle,
   #viewer.is-expanded #zoom-controls,
-  #viewer.is-expanded #pdf-tools {
+  #viewer.is-expanded #pdf-tools,
+  #viewer.is-expanded #download-btn {
     display: none !important;
   }
 
@@ -754,3 +756,13 @@ a.card { display: block; }
     height: 12px !important;
   }
 }
+
+
+
+
+/* Hide "Pending: file not added yet" cards */
+.slot.pending {
+  display: none !important;
+}
+
+

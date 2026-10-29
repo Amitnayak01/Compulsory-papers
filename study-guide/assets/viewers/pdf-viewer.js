@@ -271,7 +271,8 @@
     },
 
     markup(resource) {
-      const tools = V.buttons.fullscreen + V.buttons.fit + pageTools + V.buttons.zoom;
+      const download = `<a class="btn" id="download-btn" href="${resource.path}" download title="Download this file">⬇ <span>Download</span></a>`;
+      const tools = V.buttons.fullscreen + V.buttons.fit + pageTools + V.buttons.zoom + download;
       // The iframe is only a fallback, used if the PDF library cannot load.
       const options = V.config.allowDownload ? '' : '#toolbar=0&navpanes=0';
       const frame = `<iframe src="${resource.path}${options}" title="${V.escapeHtml(resource.title)}"></iframe>`;

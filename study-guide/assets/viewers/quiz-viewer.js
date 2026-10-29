@@ -23,7 +23,8 @@
     },
 
     markup(resource) {
-      const tools = V.buttons.fullscreen + V.buttons.fit + V.buttons.zoom;
+      const download = `<a class="btn" id="download-btn" href="${resource.path}" download title="Download this file">⬇ <span>Download</span></a>`;
+      const tools = V.buttons.fullscreen + V.buttons.fit + V.buttons.zoom + download;
       const frame = `<iframe src="${resource.path}" title="${V.escapeHtml(resource.title)}"></iframe>`;
       return V.shell(tools, frame);
     },
