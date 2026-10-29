@@ -5,6 +5,8 @@
  * Zooming never reloads the document: pages resize at once (the old picture is
  * stretched as a preview), then each page is redrawn sharply in the background and
  * swapped in only when finished, so nothing blinks or goes blank.
+ *
+ * Two-finger pinch zoom (mobile) zooms around the point between your fingers.
  */
 (function () {
   'use strict';
@@ -164,6 +166,27 @@
         percent = value;
         layout();
       },
+      // Pinch zoom: zoom to `value`, keeping the point (cx, cy) under the fingers in place.
+      // cx and cy are measured from the top-left corner of the scroller.
+      setZoomAt(value, cx, cy) {
+        const before = percent;
+        const target = Math.min(MAX_PERCENT, Math.max(MIN_PERCENT, Math.round(value)));
+        if (target === Math.round(before) && !fitting) return;
+
+        const left = scroller.scrollLeft;
+        const top = scroller.scrollTop;
+
+        fitting = false;
+        percent = target;
+        layout();
+
+        const ratio = percent / before;
+        scroller.scrollLeft = (left + cx) * ratio - cx;
+        scroller.scrollTop = (top + cy) * ratio - cy;
+      },
+      getZoom() {
+        return percent;
+      },
       zoomBy(delta) {
         this.setZoom(Math.round(percent) + delta);
       },
@@ -178,6 +201,53 @@
         pdf.destroy();
       },
     };
+  }
+
+  // ===========================================================
+  // Pinch zoom (two fingers, mobile)
+  // ===========================================================
+  function enablePinch(scroller, engine) {
+    // Leave one-finger scrolling to the browser, but take over two-finger pinch
+    scroller.style.touchAction = 'pan-x pan-y';
+
+    const dist = (t) => Math.hypot(t[0].clientX - t[1].clientX, t[0].clientY - t[1].clientY);
+    let startDist = 0;
+    let startZoom = 100;
+
+    scroller.addEventListener(
+      'touchstart',
+      (e) => {
+        if (e.touches.length === 2) {
+          startDist = dist(e.touches) || 1;
+          startZoom = engine.getZoom();
+        }
+      },
+      { passive: true }
+    );
+
+    scroller.addEventListener(
+      'touchmove',
+      (e) => {
+        if (e.touches.length !== 2 || !startDist) return;
+        if (e.cancelable) e.preventDefault(); // stop the browser's own page zoom
+
+        const rect = scroller.getBoundingClientRect();
+        const cx = (e.touches[0].clientX + e.touches[1].clientX) / 2 - rect.left;
+        const cy = (e.touches[0].clientY + e.touches[1].clientY) / 2 - rect.top;
+        engine.setZoomAt(startZoom * (dist(e.touches) / startDist), cx, cy);
+      },
+      { passive: false }
+    );
+
+    const endPinch = (e) => {
+      if (e.touches.length < 2) startDist = 0;
+    };
+    scroller.addEventListener('touchend', endPinch, { passive: true });
+    scroller.addEventListener('touchcancel', endPinch, { passive: true });
+
+    // iPhone Safari: block its own page zoom while pinching on the document
+    scroller.addEventListener('gesturestart', (e) => e.preventDefault(), { passive: false });
+    scroller.addEventListener('gesturechange', (e) => e.preventDefault(), { passive: false });
   }
 
   // ===========================================================
@@ -240,6 +310,8 @@
           $('#zoom-controls').hidden = true;
           return;
         }
+
+        enablePinch(scroller, engine);
 
         // Light deterrent: no right-click "save" menu while downloads are off.
         scroller.addEventListener('contextmenu', (event) => {
