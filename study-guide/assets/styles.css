@@ -679,7 +679,7 @@ a.card { display: block; }
   * { transition: none !important; animation: none !important; }
 }
 
-@media (max-width: 720px) {
+@media (max-width: 720px), (max-height: 500px)  {
   #viewer .btn {
     padding: 3px 7px !important;
     font-size: 11px !important;
