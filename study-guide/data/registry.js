@@ -9,14 +9,14 @@ window.REGISTRY = {
   root: "../",
 
   documents: [
-  {
-    name: "OAVS TGT Syllabus (Parts 1, 2 and 3)",
-    file: "syllabus for part 1,2 and 3.pdf",
-    note: "Syllabus for OAVS TGT examination — Parts 1, 2 and 3",
-    action: "View syllabus",
-    color: "#facc15"
-  }
-],
+    {
+      name: "OAVS TGT Syllabus (Parts 1, 2 and 3)",
+      file: "syllabus for part 1,2 and 3.pdf",
+      note: "Syllabus for OAVS TGT examination — Parts 1, 2 and 3",
+      action: "View syllabus",
+      color: "#facc15"
+    }
+  ],
 
   subjects: [
     {
@@ -53,6 +53,8 @@ window.REGISTRY = {
           folder: "International happening",
 
           files: [
+            ["OAVS_International_MCQ.html", "quiz"],
+            ["OAVS international mcq.pdf", "bank"],
             ["OAVS_TGT_Current_Affairs_International_Defence.pdf", "notes"]
           ]
         },
@@ -82,12 +84,34 @@ window.REGISTRY = {
         },
 
         {
+          name: "Schemes",
+          folder: "schemes",
+
+          files: [
+            ["OAVS_Schemes_Misc_MCQ.html", "quiz"],
+            ["OAVS_TGT_Current_Affairs_Part7_Schemes_Misc.pdf", "notes"],
+            ["OAVS_TGT_Current_Affairs_Schemes_Misc.pdf", "notes"]
+          ]
+        },
+
+        {
+          name: "Science & Environment",
+          folder: "science environment",
+
+          files: [
+            ["OAVS_Science_Environment_MCQ.html", "quiz"],
+            ["OAVS Science_Environment Mcq.pdf", "bank"],
+            ["OAVS_TGT_Current_Affairs_Science_Environment.pdf", "notes"]
+          ]
+        },
+
+        {
           name: "Sports",
           folder: "Sports",
 
           files: [
-            ["OAVS_Sports_MCQ.pdf", "bank"],
             ["OAVS_Sports_Quiz.html", "quiz"],
+            ["OAVS_Sports_MCQ.pdf", "bank"],
             ["OAVS_TGT_Current_Affairs_Part1_Sports.pdf", "notes"]
           ]
         }
