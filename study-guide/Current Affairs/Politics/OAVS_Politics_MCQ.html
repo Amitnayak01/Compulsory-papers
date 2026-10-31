@@ -11,16 +11,45 @@
 <style>
 
   /* Refresh-prevention banner */
+/* HISTORY */
+#hist-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:10000;display:none;align-items:flex-start;justify-content:center;padding:40px 14px;overflow-y:auto}
+#hist-overlay.open{display:flex}
+#hist-box{background:var(--card);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--shl);width:100%;max-width:640px;padding:18px 18px 20px}
+.hist-head{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.hist-head h2{font-family:var(--fd);font-size:22px;font-weight:400;flex:1;color:var(--text)}
+.hist-x{width:32px;height:32px;border-radius:50%;background:var(--bg2);color:var(--text2);font-size:16px}
+.hist-sum{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.hist-sum .stat-pill{cursor:default}
+.hist-empty{padding:30px 10px;text-align:center;color:var(--text3);font-size:14px}
+.hist-item{border:1px solid var(--border);border-radius:var(--rs);background:var(--bg2);margin-bottom:8px;overflow:hidden}
+.hist-row{display:flex;align-items:center;gap:10px;padding:10px 12px;cursor:pointer;flex-wrap:wrap}
+.hist-score{font-weight:700;font-size:18px;color:var(--ac);min-width:64px}
+.hist-meta{flex:1;min-width:150px;font-size:12px;color:var(--text2);line-height:1.5}
+.hist-meta b{color:var(--text)}
+.hist-tag{font-size:10px;font-weight:700;padding:2px 8px;border-radius:99px;background:var(--acl);color:var(--ac)}
+.hist-tag.inc{background:var(--ambl);color:var(--amber)}
+.hist-del{background:none;color:var(--text3);font-size:15px;padding:4px 8px;border-radius:6px}
+.hist-del:hover{color:var(--red);background:var(--redl)}
+.hist-detail{display:none;padding:4px 12px 12px;border-top:1px dashed var(--border);font-size:12.5px;color:var(--text2)}
+.hist-item.open .hist-detail{display:block}
+.hist-q{padding:6px 0;border-bottom:1px solid var(--border)}
+.hist-q:last-child{border:none}
+.hist-q .w{color:var(--red);font-weight:600}.hist-q .k{color:var(--green);font-weight:600}.hist-q .u{color:var(--amber);font-weight:600}
+.hist-foot{display:flex;justify-content:flex-end;margin-top:10px}
+.hist-clear{background:var(--redl);color:var(--red);border:1px solid var(--red);border-radius:var(--rs);padding:6px 14px;font-size:12px;font-weight:600}
+
 #refresh-warn{
   position:fixed;top:70px;left:50%;
   transform:translateX(-50%) translateY(-80px);
   background:var(--card);border:1.5px solid var(--amber);
   border-radius:var(--rs);padding:10px 20px;font-size:13px;
   font-weight:600;color:var(--amber);box-shadow:var(--shl);
-  z-index:9999;transition:transform .3s cubic-bezier(.34,1.56,.64,1);
+  z-index:9999;opacity:0;visibility:hidden;transition:transform .3s cubic-bezier(.34,1.56,.64,1),opacity .3s,visibility .3s;
   white-space:nowrap;pointer-events:none
 }
-#refresh-warn.show{transform:translateX(-50%) translateY(0)}
+#refresh-warn.show{transform:translateX(-50%) translateY(0);opacity:1;visibility:visible}
+#refresh-warn.low{top:auto;bottom:24px;transform:translateX(-50%) translateY(80px)}
+#refresh-warn.low.show{transform:translateX(-50%) translateY(0)}
 
 :root{--bg:#F5F3EE;--bg2:#EDEAE2;--card:#FFF;--border:#D8D4C8;--text:#1C1B18;--text2:#6B6860;--text3:#9B998F;--ac:#1B6F52;--ac2:#14543E;--acl:#E3F2EC;--amber:#C47F17;--ambl:#FDF3DC;--red:#C0392B;--redl:#FDECEA;--green:#1B8A52;--greenl:#E3F5EC;--purple:#6B4EAA;--purpl:#F0EBFC;--sh:0 2px 12px rgba(0,0,0,.07);--shl:0 8px 32px rgba(0,0,0,.12);--r:14px;--rs:8px;--fd:'DM Serif Display',Georgia,serif;--fb:'DM Sans',system-ui,sans-serif;--tr:.18s cubic-bezier(.4,0,.2,1)}
 [data-dark]{--bg:#0E0E0C;--bg2:#161613;--card:#1C1C19;--border:#2E2D27;--text:#F0EDE4;--text2:#908E84;--text3:#5A5850;--ac:#2EAD7A;--ac2:#25946A;--acl:#0A2318;--amber:#E0A030;--ambl:#221800;--red:#E05548;--redl:#260E0A;--green:#2EBD6A;--greenl:#082214;--purple:#9B80E0;--purpl:#160F2A;--sh:0 2px 12px rgba(0,0,0,.4);--shl:0 8px 40px rgba(0,0,0,.65)}
@@ -51,6 +80,13 @@ input,select{font-family:var(--fb)}
 .stat-pill span{font-weight:700}
 .stat-pill.correct{border-color:var(--green);color:var(--green);background:var(--greenl)}
 .stat-pill.wrong{border-color:var(--red);color:var(--red);background:var(--redl)}
+.stat-pill.sbtn{cursor:pointer;user-select:none;padding:5px 12px;font-weight:600;box-shadow:0 1px 0 rgba(0,0,0,.18);transition:transform .12s,filter .12s,box-shadow .12s}
+.stat-pill.sbtn:hover{filter:brightness(1.18);transform:translateY(-1px);box-shadow:0 3px 8px rgba(0,0,0,.25)}
+.stat-pill.sbtn:active{transform:translateY(1px) scale(.97);box-shadow:none}
+.stat-pill.sbtn:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+.stat-pill.sbtn.on{box-shadow:0 0 0 2px currentColor}
+.stat-pill.skip{border-color:var(--purple);color:var(--purple);background:var(--purpl)}
+.stat-pill .pos{font-weight:500;opacity:.75;margin-left:2px}
 .stat-pill.acc{border-color:var(--amber);color:var(--amber);background:var(--ambl)}
 .nav-row3{display:flex;align-items:center;gap:6px;padding:8px 0;flex-wrap:wrap}
 .filter-select{flex:1;min-width:100px;padding:7px 28px 7px 10px;border-radius:var(--rs);border:1.5px solid var(--border);background:var(--bg2);color:var(--text);font-size:13px;outline:none;cursor:pointer;-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;transition:border-color var(--tr),background var(--tr)}
@@ -196,7 +232,7 @@ kbd{display:inline-block;background:var(--bg2);border:1px solid var(--border);bo
 .section-title{font-family:var(--fd);font-size:20px;margin-bottom:14px;display:flex;align-items:center;gap:10px}
 .back-link{font-size:13px;color:var(--ac);display:flex;align-items:center;gap:4px;cursor:pointer;margin-bottom:14px;font-weight:500}
 .back-link:hover{text-decoration:underline}
-#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--card);border:1px solid var(--border);border-radius:var(--rs);padding:10px 20px;font-size:13px;font-weight:600;box-shadow:var(--shl);z-index:9999;transition:transform .3s cubic-bezier(.34,1.56,.64,1);white-space:nowrap;pointer-events:none}
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--card);border:1px solid var(--border);border-radius:var(--rs);padding:10px 20px;font-size:13px;font-weight:600;box-shadow:var(--shl);z-index:9999;opacity:0;visibility:hidden;transition:transform .3s cubic-bezier(.34,1.56,.64,1),opacity .3s,visibility .3s;white-space:nowrap;pointer-events:none}
 #toast.show{transform:translateX(-50%) translateY(0)}
 #toast.toast-correct{border-color:var(--green);color:var(--green)}
 #toast.toast-wrong{border-color:var(--red);color:var(--red)}
@@ -332,10 +368,95 @@ kbd{display:inline-block;background:var(--bg2);border:1px solid var(--border);bo
   .result-stat .val{font-size:20px}
   .result-title{font-size:18px}
 }
+
+/* ===== PHONE-ONLY compact top bar ===== */
+@media(max-width:600px){
+  .navbar{padding:0 8px}
+  .nav-row1{height:38px;gap:6px}
+  .logo{font-size:12.5px}
+  #progress-wrap{display:block}
+  .progress-label{display:none}
+  .progress-track{height:3px}
+  #timer-display{font-size:10px;padding:2px 6px}
+  .nav-icon-group{gap:0}
+  .icon-btn{width:28px;height:28px}
+  .icon-btn svg{width:14px;height:14px}
+  /* one swipeable line of stat buttons */
+  .nav-row2{display:grid;grid-template-columns:repeat(3,1fr);overflow:visible;gap:4px;padding:4px 0}
+  .nav-row2 .stat-pill{justify-content:center;min-width:0;white-space:nowrap;padding:3px 4px;flex-shrink:1}
+  .stat-pill,.stat-pill.sbtn{font-size:10px;padding:2px 8px;gap:3px;line-height:1.5;box-shadow:none}
+  .stat-pill.sbtn:hover{transform:none;box-shadow:none}
+  /* three filters in one row */
+  .nav-row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;padding:4px 0 6px}
+  .filter-select{width:100%;min-width:0;font-size:10.5px;padding:4px 18px 4px 6px;border-width:1px;border-radius:6px;background-position:right 5px center;background-size:9px}
+  .nav-filter-btns{grid-column:1 / -1;width:100%;gap:4px}
+  .nav-filter-btns button{flex:1;font-size:11px;padding:5px 6px;min-height:0;line-height:1.3;border-radius:6px}
+  .nav-filter-btns button svg{width:12px;height:12px}
+  #refresh-warn{top:52px;font-size:12px;padding:6px 12px}
+  #hist-overlay{padding:12px 8px}
+  #hist-box{padding:12px}
+}
+
+/* removed stat buttons (kept in DOM so stats code keeps working) */
+.stat-pill[data-mode="answered"],.stat-pill[data-mode="unanswered"]{display:none !important}
+
+/* Correct / Wrong = real buttons */
+.stat-pill.sbtn.correct,.stat-pill.sbtn.wrong{border-radius:10px;padding:7px 14px;font-size:13px;font-weight:700;border-width:1.5px;border-bottom-width:4px;letter-spacing:.2px;justify-content:center}
+.stat-pill.sbtn.correct{background:var(--green);border-color:var(--green);border-bottom-color:rgba(0,0,0,.35);color:#fff}
+.stat-pill.sbtn.wrong{background:var(--red);border-color:var(--red);border-bottom-color:rgba(0,0,0,.35);color:#fff}
+.stat-pill.sbtn.correct::after,.stat-pill.sbtn.wrong::after{content:"\203A";font-size:16px;margin-left:2px;opacity:.85}
+.stat-pill.sbtn.correct:hover,.stat-pill.sbtn.wrong:hover{filter:brightness(1.1);transform:translateY(-1px)}
+.stat-pill.sbtn.correct:active,.stat-pill.sbtn.wrong:active{transform:translateY(3px);border-bottom-width:1.5px;margin-bottom:2.5px}
+.stat-pill.sbtn.on{box-shadow:0 0 0 2px var(--card),0 0 0 4px currentColor}
+@media(max-width:600px){
+  .stat-pill.sbtn.correct,.stat-pill.sbtn.wrong{padding:6px 4px;font-size:12px;border-bottom-width:3px}
+  .nav-row2{align-items:stretch}
+}
+.nav-row2 .stat-pill.acc{border-radius:10px;justify-content:center}
+@media(max-width:600px){
+  .stat-pill.sbtn.correct,.stat-pill.sbtn.wrong{padding:3px 4px;font-size:11px;border-radius:8px;border-bottom-width:2px;gap:3px;line-height:1.4}
+  .stat-pill.sbtn.correct::after,.stat-pill.sbtn.wrong::after{font-size:12px;margin-left:0}
+  .stat-pill.sbtn.correct:active,.stat-pill.sbtn.wrong:active{transform:translateY(1px);border-bottom-width:1px;margin-bottom:1px}
+  .nav-row2{align-items:center;gap:4px;padding:3px 0}
+  .nav-row2 .stat-pill.acc{padding:3px 4px;font-size:10.5px;border-radius:8px}
+}
+@media(min-width:601px){
+  .stat-pill.sbtn.correct,.stat-pill.sbtn.wrong{padding:3px 11px;font-size:12px;border-radius:8px;border-bottom-width:3px;line-height:1.4;gap:4px}
+  .stat-pill.sbtn.correct::after,.stat-pill.sbtn.wrong::after{font-size:14px}
+  .stat-pill.sbtn.correct:active,.stat-pill.sbtn.wrong:active{transform:translateY(2px);border-bottom-width:1px;margin-bottom:2px}
+  .nav-row2 .stat-pill.acc{padding:3px 10px;font-size:11.5px;border-radius:8px}
+  .nav-row2{padding:5px 0}
+}
+.stat-pill.sbtn[data-mode="first"]{border-radius:8px;justify-content:center;font-weight:700}
+@media(max-width:600px){
+  .nav-row2{grid-template-columns:repeat(4,auto);justify-content:stretch}
+  .nav-row2{grid-template-columns:auto 1fr 1fr 1fr}
+  .stat-pill.sbtn[data-mode="first"]{padding:3px 8px;font-size:11px}
+  .stat-pill.sbtn.correct,.stat-pill.sbtn.wrong{font-size:10.5px;padding:3px 2px;gap:2px}
+  .nav-row2 .stat-pill.acc{font-size:10px;padding:3px 2px}
+}
+/* Total = real button */
+.stat-pill.sbtn[data-mode="first"]{background:#3F6FB5;border:1.5px solid #3F6FB5;border-bottom:3px solid rgba(0,0,0,.35);color:#fff;border-radius:8px;font-weight:700;justify-content:center;box-shadow:none}
+.stat-pill.sbtn[data-mode="first"] span{color:#fff}
+.stat-pill.sbtn[data-mode="first"]:hover{filter:brightness(1.1);transform:translateY(-1px)}
+.stat-pill.sbtn[data-mode="first"]:active{transform:translateY(2px);border-bottom-width:1px;margin-bottom:2px}
+@media(min-width:601px){.stat-pill.sbtn[data-mode="first"]{padding:3px 11px;font-size:12px;line-height:1.4}}
+@media(max-width:600px){.stat-pill.sbtn[data-mode="first"]{padding:3px 8px;font-size:11px;border-bottom-width:2px;line-height:1.4}}
+.stat-pill.total-pill{cursor:default;justify-content:center;border-radius:8px}
+@media(max-width:600px){.stat-pill.total-pill{padding:3px 8px;font-size:11px}}
+.stat-pill.sbtn.on,.stat-pill.sbtn:focus,.stat-pill.sbtn:focus-visible{box-shadow:none !important;outline:none !important}
+.stat-pill.sbtn{-webkit-tap-highlight-color:transparent}
 </style>
 </head>
 <body>
 <div id="toast"></div>
+
+<div id="hist-overlay" aria-hidden="true"><div id="hist-box" role="dialog" aria-label="Quiz history">
+  <div class="hist-head"><h2>History</h2><button class="hist-x" id="hist-close" title="Close">✕</button></div>
+  <div class="hist-sum" id="hist-sum"></div>
+  <div id="hist-list"></div>
+  <div class="hist-foot"><button class="hist-clear" id="hist-clear">Clear history</button></div>
+</div></div>
 
 <!-- TOP BAR -->
 <div id="top-bar"><div class="navbar">
@@ -350,6 +471,9 @@ kbd{display:inline-block;background:var(--bg2);border:1px solid var(--border);bo
       <button class="icon-btn" id="dark-toggle" title="Toggle dark mode">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
       </button>
+      <button class="icon-btn" id="history-btn" title="History - all past results">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15.5 14"/></svg>
+      </button>
       <button class="icon-btn" id="jump-toggle" title="Jump to question">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
       </button>
@@ -359,10 +483,11 @@ kbd{display:inline-block;background:var(--bg2);border:1px solid var(--border);bo
     </div>
   </div>
   <div class="nav-row2">
-    <div class="stat-pill">Total <span id="s-total">0</span></div>
-    <div class="stat-pill">✎ Attempted <span id="s-attempted">0</span></div>
-    <div class="stat-pill correct">✓ Correct <span id="s-correct">0</span></div>
-    <div class="stat-pill wrong">✗ Wrong <span id="s-wrong">0</span></div>
+    <div class="stat-pill total-pill">Total <span id="s-total">0</span></div>
+    <div class="stat-pill sbtn" data-mode="answered" role="button" tabindex="0" title="Go to next attempted question">✎ Attempted <span id="s-attempted">0</span></div>
+    <div class="stat-pill sbtn correct" data-mode="correct" role="button" tabindex="0" title="Go to next correct question">✓ Correct <span id="s-correct">0</span></div>
+    <div class="stat-pill sbtn wrong" data-mode="wrong" role="button" tabindex="0" title="Go to next wrong question">✗ Wrong <span id="s-wrong">0</span></div>
+    <div class="stat-pill sbtn skip" data-mode="unanswered" role="button" tabindex="0" title="Go to next unattempted question">⏭ Unattempted <span id="s-unans">0</span></div>
     <div class="stat-pill acc">⚡ Accuracy <span id="s-acc">—</span></div>
   </div>
   <div class="nav-row3">
@@ -401,7 +526,7 @@ kbd{display:inline-block;background:var(--bg2);border:1px solid var(--border);bo
         <button class="nav-btn primary" id="next-btn">Next <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></button>
       </div>
       <div class="kbd-hint">Keyboard: <kbd>A</kbd><kbd>B</kbd><kbd>C</kbd><kbd>D</kbd> — options &nbsp;|&nbsp; <kbd>←</kbd><kbd>→</kbd> — navigate &nbsp;|&nbsp; <kbd>E</kbd> — explanation</div>
-      <div id="jump-bar">
+      <div id="jump-bar" class="open">
         <div class="jump-label">Jump to Question</div>
         <div class="jump-grid" id="jump-grid"></div>
         <div class="jump-legend">
@@ -520,7 +645,7 @@ const QUESTIONS = [
 /* STATE */
 const S = {
   filtered:[],idx:0,answers:{},bookmarks:new Set(),
-  dark:false,jumpOpen:false,expVisible:false,
+  dark:false,jumpOpen:true,expVisible:false,
   startTime:Date.now(),timerInterval:null,
   phase:'quiz',reviewFilter:'all',
   showBookmarkOnly:false,viewAll:false
@@ -677,7 +802,7 @@ function buildJumpGrid(){
     const a=S.answers[q.id];
     if(a?.selected)btn.classList.add(a.correct?'answered-c':'answered-w');
     if(S.bookmarks.has(q.id))btn.classList.add('bookmarked');
-    btn.addEventListener('click',()=>{goTo(i);S.jumpOpen=false;$('jump-bar').classList.remove('open');});
+    btn.addEventListener('click',()=>{goTo(i);});
     grid.appendChild(btn);
   });
 }
@@ -693,11 +818,13 @@ function updateStats(){
   $('s-attempted').textContent=ans.length;
   $('s-correct').textContent=ok;
   $('s-wrong').textContent=ans.length-ok;
+  const _u=$('s-unans');if(_u)_u.textContent=Math.max(S.filtered.filter(q=>!(S.answers[q.id]&&S.answers[q.id].selected)).length,0);
   $('s-acc').textContent=ans.length?Math.round(ok/ans.length*100)+'%':'—';
 }
 
 function finishQuiz(){
   stopTimer();
+  if(!S.histSaved)recordAttempt('Completed');
   const total=S.filtered.length;
   const ans=Object.values(S.answers).filter(a=>a?.selected);
   const ok=ans.filter(a=>a.correct).length;
@@ -772,6 +899,8 @@ function toggleDark(force){
 }
 
 function restartQuiz(){
+  if(!S.histSaved&&Object.keys(S.answers).length)recordAttempt('Incomplete');
+  S.histSaved=false;
   S.answers={};S.idx=0;S.expVisible=false;S.viewAll=false;
   $('quiz-body').style.display='';$('all-panel').style.display='none';
   resetViewAllBtn();
@@ -884,7 +1013,7 @@ function toggleViewAll(){
 /* EVENT LISTENERS */
 $('prev-btn').addEventListener('click',()=>goTo(S.idx-1));
 $('next-btn').addEventListener('click',()=>S.idx<S.filtered.length-1?goTo(S.idx+1):finishQuiz());
-$('jump-toggle').addEventListener('click',()=>{S.jumpOpen=!S.jumpOpen;$('jump-bar').classList.toggle('open',S.jumpOpen);});
+$('jump-toggle').addEventListener('click',()=>{S.jumpOpen=!S.jumpOpen;$('jump-bar').classList.toggle('open',S.jumpOpen);if(S.jumpOpen)setTimeout(()=>$('jump-bar').scrollIntoView({behavior:'smooth',block:'center'}),50);});
 $('dark-toggle').addEventListener('click',()=>toggleDark());
 $('finish-btn').addEventListener('click',finishQuiz);
 $('restart-btn').addEventListener('click',restartQuiz);
@@ -927,48 +1056,152 @@ document.addEventListener('keydown',e=>{
   if(lbl&&!S.answers[q.id]?.selected)selectAnswer(q.id,lbl,q.answer);
 });
 
-/* ── Prevent accidental refresh / navigation ── */
-function hasProgress(){
-  return Object.keys(S.answers).length > 0;
+/* ── History of all results ── */
+const HIST_KEY='mcq-history-politics-v1';
+function loadHist(){try{return JSON.parse(localStorage.getItem(HIST_KEY)||'[]');}catch(e){return [];}}
+function saveHist(h){try{localStorage.setItem(HIST_KEY,JSON.stringify(h));}catch(e){}}
+function recordAttempt(status){
+  const total=S.filtered.length;
+  const items=S.filtered.map(q=>{const a=S.answers[q.id];return [q.id,a&&a.selected?a.selected:'',a&&a.selected?(a.correct?1:0):-1];});
+  const ok=items.filter(x=>x[2]===1).length,wr=items.filter(x=>x[2]===0).length;
+  if(!ok&&!wr)return;
+  const h=loadHist();
+  h.unshift({t:Date.now(),status,total,ok,wr,un:total-ok-wr,pct:total?Math.round(ok/total*100):0,
+    time:Math.floor((Date.now()-S.startTime)/1000),items});
+  saveHist(h.slice(0,100));
+  S.histSaved=true;
 }
-
-// Browser close / tab close / address bar navigation
-window.addEventListener('beforeunload', function(e){
-  if(hasProgress()){
-    e.preventDefault();
-    e.returnValue = 'You have quiz progress that will be lost. Leave anyway?';
-    return e.returnValue;
+function fmtT(sec){return String(Math.floor(sec/60)).padStart(2,'0')+':'+String(sec%60).padStart(2,'0');}
+function fmtD(ts){return new Date(ts).toLocaleString([], {day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});}
+function renderHistory(){
+  const h=loadHist(),list=$('hist-list'),sum=$('hist-sum');
+  list.innerHTML='';
+  if(!h.length){
+    sum.innerHTML='';
+    list.innerHTML='<div class="hist-empty">No results yet. Finish a quiz (or restart one in progress) and it will be saved here.</div>';
+    $('hist-clear').style.display='none';return;
   }
+  $('hist-clear').style.display='';$('hist-clear').textContent='Clear history';
+  const best=Math.max(...h.map(x=>x.pct)),avg=Math.round(h.reduce((a,x)=>a+x.pct,0)/h.length);
+  sum.innerHTML=`<div class="stat-pill">Attempts <span>${h.length}</span></div><div class="stat-pill correct">Best <span>${best}%</span></div><div class="stat-pill acc">Average <span>${avg}%</span></div>`;
+  const byId={};QUESTIONS.forEach(q=>byId[q.id]=q);
+  h.forEach((x,i)=>{
+    const el=document.createElement('div');el.className='hist-item';
+    el.innerHTML=`<div class="hist-row">
+      <div class="hist-score">${x.ok}/${x.total}</div>
+      <div class="hist-meta"><b>${fmtD(x.t)}</b> <span class="hist-tag ${x.status==='Completed'?'':'inc'}">${x.status}</span><br>
+        ✓ ${x.ok} · ✗ ${x.wr} · ⏭ ${x.un} · ${x.pct}% · ⏱ ${fmtT(x.time)}</div>
+      <button class="hist-del" title="Delete this result">🗑</button></div>
+      <div class="hist-detail"></div>`;
+    el.querySelector('.hist-row').addEventListener('click',ev=>{
+      if(ev.target.closest('.hist-del'))return;
+      const d=el.querySelector('.hist-detail');
+      if(!d.innerHTML){
+        d.innerHTML=x.items.map(([id,sel,r])=>{
+          const q=byId[id];if(!q)return '';
+          const st=r===1?`<span class="k">✓ Correct (${sel})</span>`:r===0?`<span class="w">✗ Your answer ${sel} · correct ${q.answer}</span>`:`<span class="u">⏭ Not attempted · correct ${q.answer}</span>`;
+          return `<div class="hist-q"><b>Q${id}.</b> ${q.question}<br>${st}</div>`;
+        }).join('');
+      }
+      el.classList.toggle('open');
+    });
+    el.querySelector('.hist-del').addEventListener('click',()=>{
+      const a=loadHist();a.splice(i,1);saveHist(a);renderHistory();
+    });
+    list.appendChild(el);
+  });
+}
+function openHistory(){renderHistory();$('hist-overlay').classList.add('open');}
+function closeHistory(){$('hist-overlay').classList.remove('open');}
+$('history-btn').addEventListener('click',openHistory);
+$('hist-close').addEventListener('click',closeHistory);
+$('hist-overlay').addEventListener('click',e=>{if(e.target.id==='hist-overlay')closeHistory();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeHistory();});
+$('hist-clear').addEventListener('click',function(){
+  if(this.dataset.arm){saveHist([]);this.dataset.arm='';renderHistory();return;}
+  this.dataset.arm='1';this.textContent='Click again to confirm';
+  setTimeout(()=>{this.dataset.arm='';if(this.isConnected)this.textContent='Clear history';},3000);
 });
 
-// F5 / Ctrl+R / Cmd+R key intercept
-document.addEventListener('keydown', function(e){
-  if(!hasProgress()) return;
-  const isRefresh = e.key === 'F5' ||
-    ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'r');
-  if(isRefresh){
-    e.preventDefault();
-    showRefreshWarn();
-  }
-}, true);  // capture phase so it fires before other handlers
-
-function showRefreshWarn(){
-  let el = document.getElementById('refresh-warn');
-  if(!el){
-    el = document.createElement('div');
-    el.id = 'refresh-warn';
-    el.textContent = '⚠ Refresh blocked – quiz in progress!';
-    document.body.appendChild(el);
-  }
-  el.classList.add('show');
-  clearTimeout(el._t);
-  el._t = setTimeout(() => el.classList.remove('show'), 2800);
+/* ── Auto-save progress (replaces the "Leave site?" warning) ── */
+const SAVE_KEY='mcq-progress-politics-v1';
+function saveProgress(){
+  try{
+    localStorage.setItem(SAVE_KEY,JSON.stringify({
+      answers:S.answers,bookmarks:[...S.bookmarks],idx:S.idx,
+      elapsed:Math.floor((Date.now()-S.startTime)/1000),saved:Date.now()
+    }));
+  }catch(e){}
 }
+function restoreProgress(){
+  try{
+    const raw=localStorage.getItem(SAVE_KEY); if(!raw)return;
+    const d=JSON.parse(raw);
+    S.answers=d.answers||{};
+    S.bookmarks=new Set(d.bookmarks||[]);
+    S.idx=Math.min(d.idx||0,Math.max(S.filtered.length-1,0));
+    S.startTime=Date.now()-(d.elapsed||0)*1000;
+    buildJumpGrid();render();updateStats();
+    const n=Object.keys(S.answers).length;
+    if(n)showSaveToast('Progress restored: '+n+' answered');
+  }catch(e){}
+}
+function showSaveToast(msg,quick){
+  let el=document.getElementById('refresh-warn');
+  if(!el){el=document.createElement('div');el.id='refresh-warn';document.body.appendChild(el);}
+  clearInterval(el._i);clearTimeout(el._t);
+  el.classList.toggle('low',!!quick);
+  let left=3;
+  const paint=()=>{el.textContent=msg+'  \u00b7  closing in '+left+'s';};
+  paint();el.classList.add('show');
+  el._i=setInterval(()=>{
+    left--;
+    if(left<=0){clearInterval(el._i);el.classList.remove('show');}
+    else paint();
+  },1000);
+}
+setInterval(saveProgress,2000);
+window.addEventListener('pagehide',saveProgress);
+document.addEventListener('visibilitychange',()=>{if(document.hidden)saveProgress();});
+document.addEventListener('click',()=>setTimeout(saveProgress,50),true);
+document.addEventListener('keydown',()=>setTimeout(saveProgress,50),true);
 
+/* ── Stat buttons jump to matching questions ── */
+function matchMode(mode,a){
+  const done=!!(a&&a.selected);
+  return mode==='correct'?done&&a.correct:mode==='wrong'?done&&!a.correct:mode==='answered'?done:mode==='unanswered'?!done:true;
+}
+const MODE_LABEL={correct:'correct',wrong:'wrong',answered:'attempted',unanswered:'unattempted',first:''};
+function jumpToStatus(mode,btn){
+  document.querySelectorAll('.stat-pill.sbtn.on').forEach(x=>x.classList.remove('on'));
+  if(btn)btn.classList.add('on');
+  if(mode==='first'){S.viewAll?window.scrollTo({top:0,behavior:'smooth'}):goTo(0);return;}
+  if(S.viewAll){
+    const cards=[...document.querySelectorAll('.all-q-body')].map(x=>x.parentElement).filter(c=>{
+      const w=!!c.querySelector('.ao-wrong'),k=!!c.querySelector('.ao-correct');
+      return mode==='correct'?k&&!w:mode==='wrong'?w:mode==='answered'?k||w:!(k||w);
+    });
+    if(!cards.length){showSaveToast('No '+MODE_LABEL[mode]+' questions');return;}
+    const y=window.scrollY+window.innerHeight/2;
+    (cards.find(c=>c.getBoundingClientRect().top+window.scrollY>y)||cards[0]).scrollIntoView({behavior:'smooth',block:'center'});
+    return;
+  }
+  const hits=[];
+  S.filtered.forEach((q,i)=>{if(matchMode(mode,S.answers[q.id]))hits.push(i);});
+  if(!hits.length){showSaveToast('No '+MODE_LABEL[mode]+' questions');return;}
+  const next=hits.find(i=>i>S.idx);
+  const pick=next!==undefined?next:hits[0];
+  goTo(pick);
+  showSaveToast(MODE_LABEL[mode]+' '+(hits.indexOf(pick)+1)+' of '+hits.length,true);
+}
+document.querySelectorAll('.stat-pill.sbtn').forEach(el=>{
+  const m=el.dataset.mode;
+  el.addEventListener('click',()=>jumpToStatus(m,el));
+  el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();jumpToStatus(m,el);}});
+});
 
 init();
-
-
+restoreProgress();
 
 </script>
 </body>
